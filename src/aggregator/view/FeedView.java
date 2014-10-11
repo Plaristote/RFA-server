@@ -38,5 +38,6 @@ public class FeedView
     view.property("title",       item.title);
     view.property("url",         item.url);
     view.property("description", item.description);
+    view.property("favicon",     item.favicon);
   }
 }

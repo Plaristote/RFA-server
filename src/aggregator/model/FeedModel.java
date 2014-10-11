@@ -17,6 +17,7 @@ public class FeedModel extends Model
   public String url;
   public String description;
   public Date   updated_at;
+  public String favicon;
 
   public FeedModel(FeedTable table, ResultSet row) throws SQLException
   {
@@ -24,6 +25,7 @@ public class FeedModel extends Model
 	title       = row.getString("title");
 	url         = row.getString("url");
 	description = row.getString("description");
+	favicon     = row.getString("favicon");
 	updated_at  = row.getDate("updated_at");
   }
 
