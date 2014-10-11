@@ -1,3 +1,5 @@
 .sass-cache
 www/node_modules
 www/javascripts/templates
+.*.swp
+.*.swo
