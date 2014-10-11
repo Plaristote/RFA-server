@@ -1,0 +1,18 @@
+{
+  "javascripts": {
+    "application": [
+      "vendor/underscore.js",
+      "vendor/backbone.js",
+      "vendor/jquery.growl.js",
+      "templates/**/*.js",
+      "app/**/*.js",
+      "app/**/*.coffee"
+    ]
+  },
+  "stylesheets": {
+    "application": [
+      "**/*.css",
+      "application.scss"
+    ]
+  }
+}

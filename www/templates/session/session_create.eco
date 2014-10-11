@@ -1,0 +1,19 @@
+<form class="create-user">
+  <div class="label">
+    <label for="username">Username</label>
+  </div>
+  <div class="value">
+    <input type="text" name="username" />
+  </div>
+
+  <div class="label">
+    <label for="password">Password</label>
+  </div>
+  <div class="value">
+    <input type="password" name="password" />
+  </div>
+
+  <div class="controls">
+    <input type="submit" value="Connect" />
+  </div>
+</form>

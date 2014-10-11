@@ -1,0 +1,15 @@
+@import "header";
+@import "footer";
+@import "feed_list";
+
+#fertiligene {
+  @include outer-container;
+
+  #menu {
+    @include span-columns(4);
+  }
+
+  #main-content {
+    @include span-columns(8);
+  }
+}

@@ -1,0 +1,19 @@
+<div id="fertiligene">
+  <div id="header">
+  </div>
+
+  <nav id="menu">
+    <div id="user">
+    </div>
+
+    <div id="feed-list">
+    </div>
+  </nav>
+
+  <section id="main-content">
+  </section>
+</div>
+
+<footer id="footer">
+  Fertiligene RSS Aggregator
+</footer>

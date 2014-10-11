@@ -1,0 +1,15 @@
+{
+  "name": "crails-asset-pipeline",
+  "description": "Crails asset pipeline, compiling javascript/coffee/sass/ecpp assets within a Crails project",
+  "version": "1.0.0",
+  "dependencies": {
+    "gulp":            "",
+    "gulp-coffee":     "",
+    "gulp-eco":        "",
+    "gulp-concat":     "",
+    "gulp-uglify":     "",
+    "gulp-ruby-sass":  "",
+    "gulp-if":         "",
+    "require-without-cache": ""
+  }
+}
