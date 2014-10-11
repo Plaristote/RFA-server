@@ -5,8 +5,11 @@
       "vendor/backbone.js",
       "vendor/jquery.growl.js",
       "templates/**/*.js",
-      "app/**/*.js",
-      "app/**/*.coffee"
+      "app/models/**/*.coffee",
+      "app/collections/**/*.coffee",
+      "app/views/**/*.coffee",
+      "app/controllers/**/*.coffee",
+      "app/*.coffee"
     ]
   },
   "stylesheets": {

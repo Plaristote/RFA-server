@@ -1,11 +1,13 @@
-<div id="fertiligene">
-  <div id="header">
+<div id="header">
+  <div class="icon"></div>
+  <h2 class="title">Fertiligene Aggregator</h2>
+
+  <div id="user">
   </div>
+</div>
 
+<div id="fertiligene">
   <nav id="menu">
-    <div id="user">
-    </div>
-
     <div id="feed-list">
     </div>
   </nav>

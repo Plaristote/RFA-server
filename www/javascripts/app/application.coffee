@@ -1,12 +1,20 @@
 window.application = new class
   constructor: () ->
     $(document).ready => @initialize()
-    @host = 'localhost:8080/aggregator'
+    @host = '/someproject'
 
   initialize: () ->
-    @session_controller = new SessionController()
-    @feeds_controller   = new FeedsController()
+    @current_user = new CurrentUser()
+    @initialize_collections()
+    @initialize_controllers()
     Backbone.history.start()
+
+  initialize_collections: () ->
+    @feeds = new FeedCollection()
+
+  initialize_controllers: () ->
+    @home_controller    = new HomeController()
+    @feeds_controller   = new FeedsController()
 
   url: (path) ->
     "#{@host}/#{path}"

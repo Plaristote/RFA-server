@@ -1,0 +1,7 @@
+<span class="session-show">
+  welcome <span class="username"><%= application.current_user.get 'email' %></span>
+</span>
+
+<a class="disconnect-button">
+  disconnect
+</a>

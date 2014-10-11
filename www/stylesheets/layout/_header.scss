@@ -1,0 +1,56 @@
+#header {
+  $height: 75px;
+  @include fill-parent;
+  @include linear-gradient(#000000, #202020);
+  min-height: $height;
+  padding:       15px;
+  margin-bottom: 15px;
+  box-shadow:    0px 5px 5px #888888;
+
+  .icon {
+    position: absolute;
+    top:      0px;
+    left:     0px;
+    background: url('images/icon.jpg') no-repeat;
+    background-size: $height $height;
+    height: $height;
+    width:  $height;
+  }
+
+  .title {
+    position: absolute;
+    left:  $height + 15px;
+    color: #CCCCCC;
+  }
+
+  .session-view {
+    float: right;
+
+    .label, .value, .controls {
+      float: left;
+     }
+
+    .label {
+      color:   white;
+      padding: 10px;
+     }
+
+    .value {
+      width:  150px;
+      height: 30px;
+    }
+
+    .controls {
+      padding-left: 15px;
+    }
+
+    .disconnect-button {
+      @include button(simple, lighten(black, 10));
+      color: white;
+    }
+
+    .session-show {
+      color: white;
+    }
+  }
+}

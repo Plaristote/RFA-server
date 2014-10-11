@@ -1,0 +1,9 @@
+<h4>subscribtions</h4>
+<ul>
+  <% for feed in @collection.models: %>
+    <li data-id="<%= feed.get 'id' %>" style="background-image: url(<%= feed.get 'favicon' %>);">
+      <%= feed.get 'title' %>
+      <div class="counter"><%= feed.get 'unread' %></div>
+    </li>
+  <% end %>
+</ul>

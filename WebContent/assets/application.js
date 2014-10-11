@@ -3249,7 +3249,7 @@ Copyright 2013 Kevin Sylvestre
 if (!window.JST) {
   window.JST = {};
 }
-window.JST["home"] = function (__obj) {
+window.JST["menu_feeds"] = function (__obj) {
   if (!__obj) __obj = {};
   var __out = [], __capture = function(callback) {
     var out = __out, result;
@@ -3288,7 +3288,25 @@ window.JST["home"] = function (__obj) {
   }
   (function() {
     (function() {
-      __out.push('<div id="fertiligene">\n  <div id="header">\n  </div>\n\n  <nav id="menu">\n    <div id="user">\n    </div>\n\n    <div id="feed-list">\n    </div>\n  </nav>\n\n  <section id="main-content">\n  </section>\n</div>\n\n<footer id="footer">\n  Fertiligene RSS Aggregator\n</footer>\n');
+      var feed, _i, _len, _ref;
+    
+      __out.push('<h4>subscribtions</h4>\n<ul>\n  ');
+    
+      _ref = this.collection.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        feed = _ref[_i];
+        __out.push('\n    <li data-id="');
+        __out.push(__sanitize(feed.get('id')));
+        __out.push('" style="background-image: url(');
+        __out.push(__sanitize(feed.get('favicon')));
+        __out.push(');">\n      ');
+        __out.push(__sanitize(feed.get('title')));
+        __out.push('\n      <div class="counter">');
+        __out.push(__sanitize(feed.get('unread')));
+        __out.push('</div>\n    </li>\n  ');
+      }
+    
+      __out.push('\n</ul>\n');
     
     }).call(this);
     
@@ -3300,7 +3318,7 @@ window.JST["home"] = function (__obj) {
 if (!window.JST) {
   window.JST = {};
 }
-window.JST["session_create"] = function (__obj) {
+window.JST["menu_user"] = function (__obj) {
   if (!__obj) __obj = {};
   var __out = [], __capture = function(callback) {
     var out = __out, result;
@@ -3339,7 +3357,62 @@ window.JST["session_create"] = function (__obj) {
   }
   (function() {
     (function() {
-      __out.push('<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
+      __out.push('Menu user\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["session_show"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<span class="session-show">\n  welcome <span class="username">');
+    
+      __out.push(__sanitize(application.current_user.get('email')));
+    
+      __out.push('</span>\n</span>\n\n<a class="disconnect-button">\n  disconnect\n</a>\n');
     
     }).call(this);
     
@@ -3349,41 +3422,299 @@ window.JST["session_create"] = function (__obj) {
 };
 
 (function() {
-  window.application = new ((function() {
-    function _Class() {
-      $(document).ready((function(_this) {
-        return function() {
-          return _this.initialize();
-        };
-      })(this));
-      this.host = 'localhost:8080/aggregator';
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.FeedModel = (function(_super) {
+    __extends(FeedModel, _super);
+
+    function FeedModel() {
+      return FeedModel.__super__.constructor.apply(this, arguments);
     }
 
-    _Class.prototype.initialize = function() {
-      this.session_controller = new SessionController();
-      this.feeds_controller = new FeedsController();
-      return Backbone.history.start();
+    FeedModel.prototype.url = function() {
+      return application.url('feeds');
     };
 
-    _Class.prototype.url = function(path) {
-      return "" + this.host + "/" + path;
+    return FeedModel;
+
+  })(Backbone.Model);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.CurrentUser = (function(_super) {
+    __extends(CurrentUser, _super);
+
+    function CurrentUser() {
+      return CurrentUser.__super__.constructor.apply(this, arguments);
+    }
+
+    CurrentUser.prototype.is_connected = function() {
+      return this.has('email');
     };
 
-    _Class.prototype.notification = function(message, type) {
-      if (type != null) {
-        return $.growl[type]({
-          message: message
-        });
-      } else {
-        return $.growl({
-          message: message
-        });
+    CurrentUser.prototype.connect = function(options) {
+      if (options == null) {
+        options = {};
       }
+      return $.ajax({
+        method: 'POST',
+        url: application.url('session'),
+        success: (function(_this) {
+          return function() {
+            _this.set('email', options.username);
+            _this.trigger('authenticate');
+            _this.trigger('authenticate:connect');
+            if (options.success != null) {
+              return options.success();
+            }
+          };
+        })(this),
+        error: function() {
+          if (options.failure != null) {
+            return options.failure();
+          }
+        },
+        data: {
+          email: options.username,
+          password: options.password
+        }
+      });
     };
 
-    return _Class;
+    CurrentUser.prototype.disconnect = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      return $.ajax({
+        method: 'DELETE',
+        url: application.url('session'),
+        success: (function(_this) {
+          return function() {
+            _this.unset('email');
+            _this.trigger('authenticate');
+            _this.trigger('authenticate:disconnect');
+            if (options.success != null) {
+              return options.success();
+            }
+          };
+        })(this),
+        error: function() {
+          if (options.failure != null) {
+            return options.failure();
+          }
+        }
+      });
+    };
 
-  })());
+    return CurrentUser;
+
+  })(Backbone.Model);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.FeedCollection = (function(_super) {
+    __extends(FeedCollection, _super);
+
+    FeedCollection.prototype.model = FeedModel;
+
+    FeedCollection.prototype.url = function() {
+      return application.url('feeds');
+    };
+
+    function FeedCollection() {
+      application.current_user.on('authenticate:connect', (function(_this) {
+        return function() {
+          return _this.fetch();
+        };
+      })(this));
+      if (application.current_user.is_connected() != null) {
+        this.fetch();
+      }
+      FeedCollection.__super__.constructor.apply(this, arguments);
+    }
+
+    FeedCollection.prototype.fetch = function() {
+      return $.ajax({
+        method: 'GET',
+        url: this.url(),
+        success: (function(_this) {
+          return function(data) {
+            window.test_feeds = [
+              {
+                id: 1,
+                title: '9-Gag',
+                favicon: 'http://assets-9gag-lol.9cache.com/static/00028/core/20140127_1390790346/img/favicon_v2.png',
+                unread: 21
+              }, {
+                id: 2,
+                title: 'The Art of Manliness',
+                favicon: 'http://aom.screenfour.com/wp-content/uploads/builder-favicon/6qBqUBP7i.ico',
+                unread: 42
+              }
+            ];
+            console.log(test_feeds);
+            _this.reset();
+            return _this.add(test_feeds);
+          };
+        })(this)
+      });
+    };
+
+    return FeedCollection;
+
+  })(Backbone.Collection);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.HomeView = (function(_super) {
+    __extends(HomeView, _super);
+
+    HomeView.prototype.template = JST['home'];
+
+    HomeView.prototype.template_feeds = JST['menu_feeds'];
+
+    function HomeView() {
+      HomeView.__super__.constructor.apply(this, arguments);
+      this.listenTo(application.feeds, 'change reset add remove', this.refresh_feeds);
+      this.listenTo(application.current_user, 'authenticate', this.refresh_user);
+    }
+
+    HomeView.prototype.render = function() {
+      this.$el.html(this.template());
+      this.$user = this.$el.find('#user');
+      this.$feeds = this.$el.find('#feed-list');
+      this.refresh_user();
+      this.refresh_feeds();
+      return $('body').empty().append(this.$el);
+    };
+
+    HomeView.prototype.refresh_feeds = function() {
+      console.log("refreshing feeds");
+      return this.$feeds.html(this.template_feeds({
+        collection: application.feeds
+      }));
+    };
+
+    HomeView.prototype.refresh_user = function() {
+      var view;
+      console.log("refreshing user " + (application.current_user.get('email')) + " -> connected:" + (application.current_user.is_connected()));
+      view = application.current_user.is_connected() ? new SessionViews.Show() : new SessionViews.Create();
+      view.render();
+      return this.$user.empty().append(view.$el);
+    };
+
+    return HomeView;
+
+  })(Backbone.View);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.SessionViews || (window.SessionViews = {});
+
+  window.SessionViews.Create = (function(_super) {
+    __extends(Create, _super);
+
+    function Create() {
+      return Create.__super__.constructor.apply(this, arguments);
+    }
+
+    Create.prototype.className = 'session-view';
+
+    Create.prototype.template = JST['session_create'];
+
+    Create.prototype.events = {
+      'submit form': 'onFormSubmit'
+    };
+
+    Create.prototype.render = function() {
+      this.$el.html(this.template());
+      return $('body').empty().append(this.$el);
+    };
+
+    Create.prototype.username = function() {
+      return this.$el.find('input[name="username"]').val();
+    };
+
+    Create.prototype.password = function() {
+      return this.$el.find('input[name="password"]').val();
+    };
+
+    Create.prototype.onFormSubmit = function(e) {
+      e.preventDefault();
+      return application.current_user.connect({
+        username: this.username(),
+        password: this.password(),
+        failure: this.onLoginFailed.bind(this)
+      });
+    };
+
+    Create.prototype.onLoginFailed = function() {
+      return application.notification("Cannot authenticate as user '" + (this.username()) + "'", 'error');
+    };
+
+    return Create;
+
+  })(Backbone.View);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.SessionViews || (window.SessionViews = {});
+
+  window.SessionViews.Show = (function(_super) {
+    __extends(Show, _super);
+
+    function Show() {
+      return Show.__super__.constructor.apply(this, arguments);
+    }
+
+    Show.prototype.className = 'session-view';
+
+    Show.prototype.template = JST['session_show'];
+
+    Show.prototype.events = {
+      'click .disconnect-button': 'disconnect'
+    };
+
+    Show.prototype.render = function() {
+      return this.$el.html(this.template({
+        username: application.username
+      }));
+    };
+
+    Show.prototype.disconnect = function() {
+      return application.current_user.disconnect({
+        failure: this.onDestroyFailure.bind(this)
+      });
+    };
+
+    Show.prototype.onDestroyFailure = function() {
+      return application.notification("User '" + this.username + "' could not be disconnected", 'error');
+    };
+
+    return Show;
+
+  })(Backbone.View);
 
 }).call(this);
 
@@ -3423,108 +3754,82 @@ window.JST["session_create"] = function (__obj) {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.SessionController = (function(_super) {
-    __extends(SessionController, _super);
+  window.HomeController = (function(_super) {
+    __extends(HomeController, _super);
 
-    function SessionController() {
-      return SessionController.__super__.constructor.apply(this, arguments);
+    HomeController.prototype.routes = {
+      "home": "show"
+    };
+
+    function HomeController() {
+      HomeController.__super__.constructor.apply(this, arguments);
+      this.view = new HomeView();
+      this.view.render();
     }
 
-    SessionController.prototype.routes = {
-      "session/create": "create",
-      "session/destroy": "destroy"
-    };
+    HomeController.prototype.show = function() {};
 
-    SessionController.prototype.create = function() {
-      var view;
-      view = new SessionViews.Create();
-      view.render();
-      view.onCreate = this.onCreate.bind(this);
-      return $('body').append(view.$el);
-    };
-
-    SessionController.prototype.destroy = function() {
-      return $.ajax({
-        method: 'DELETE',
-        url: application.url('session'),
-        success: this.onDestroySuccess.bind(this),
-        error: this.onDestroyFailure.bind(this)
-      });
-    };
-
-    SessionController.prototype.onCreate = function(username, password) {
-      alert("Creating session for " + username + " with password " + password);
-      this.username = username;
-      return $.ajax({
-        method: 'POST',
-        url: application.url('session'),
-        success: this.onCreateSuccess.bind(this),
-        error: this.onCreateFailure.bind(this),
-        data: {
-          email: username,
-          password: password
-        }
-      });
-    };
-
-    SessionController.prototype.onCreateSuccess = function() {
-      return alert('create success');
-    };
-
-    SessionController.prototype.onCreateFailure = function() {
-      application.notification("User '" + this.username + "' could not be authentified", 'error');
-      return Backbone.history.navigate('/sessions/create', true);
-    };
-
-    SessionController.prototype.onDestroySuccess = function() {
-      return alert('destroy success');
-    };
-
-    SessionController.prototype.onDestroyFailure = function() {
-      return application.notification("User '" + this.username + "' could not be disconnected", 'error');
-    };
-
-    return SessionController;
+    return HomeController;
 
   })(Backbone.Router);
 
 }).call(this);
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.SessionViews || (window.SessionViews = {});
 
-  window.SessionViews.Create = (function(_super) {
-    __extends(Create, _super);
+}).call(this);
 
-    function Create() {
-      return Create.__super__.constructor.apply(this, arguments);
+(function() {
+  window.application = new ((function() {
+    function _Class() {
+      $(document).ready((function(_this) {
+        return function() {
+          return _this.initialize();
+        };
+      })(this));
+      this.host = '/someproject';
     }
 
-    Create.prototype.template = JST['session_create'];
-
-    Create.prototype.events = {
-      'submit form': 'onFormSubmit'
+    _Class.prototype.initialize = function() {
+      this.current_user = new CurrentUser();
+      this.initialize_collections();
+      this.initialize_controllers();
+      return Backbone.history.start();
     };
 
-    Create.prototype.render = function() {
-      return this.$el.html(this.template());
+    _Class.prototype.initialize_collections = function() {
+      return this.feeds = new FeedCollection();
     };
 
-    Create.prototype.onFormSubmit = function(e) {
-      var password, username;
-      e.preventDefault();
-      if (this.onCreate != null) {
-        username = this.$el.find('input[name="username"]').val();
-        password = this.$el.find('input[name="password"]').val();
-        return this.onCreate(username, password);
+    _Class.prototype.initialize_controllers = function() {
+      this.home_controller = new HomeController();
+      return this.feeds_controller = new FeedsController();
+    };
+
+    _Class.prototype.url = function(path) {
+      return "" + this.host + "/" + path;
+    };
+
+    _Class.prototype.notification = function(message, type) {
+      if (type != null) {
+        return $.growl[type]({
+          message: message
+        });
+      } else {
+        return $.growl({
+          message: message
+        });
       }
     };
 
-    return Create;
+    return _Class;
 
-  })(Backbone.View);
+  })());
+
+}).call(this);
+
+(function() {
+
 
 }).call(this);
