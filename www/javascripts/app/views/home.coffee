@@ -2,6 +2,10 @@ class window.HomeView extends Backbone.View
   template:       JST['home']
   template_feeds: JST['menu_feeds']
 
+  events: {
+    "click .add-feed button": "add_feed"
+  }
+
   constructor: () ->
     super
     @listenTo application.feeds,        'change reset add remove', @refresh_feeds
@@ -27,3 +31,7 @@ class window.HomeView extends Backbone.View
       new SessionViews.Create()
     view.render()
     @$user.empty().append view.$el
+
+  add_feed: (e) ->
+    e.preventDefault()
+    application.feeds.create_from_url @$el.find('.add-feed-url').val()

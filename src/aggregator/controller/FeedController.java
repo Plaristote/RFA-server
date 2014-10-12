@@ -1,5 +1,6 @@
 package aggregator.controller;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,25 +28,33 @@ public class FeedController extends Controller
 	response.getWriter().write(FeedView.index(entries));
   }
 
+  @SuppressWarnings("serial")
   @Override
   public void create() throws Exception
   {
 	require_authentified_user();
-	
-	String    feed_url   = request.getParameter("feed_url");
-	int       feed_id    = 0;
+	require_parameters(new ArrayList<String>() {{ add("feed[url]"); }});
+
+	String    feed_url   = request.getParameter("feed[url]");
 	FeedTable feed_table = new FeedTable();
 	FeedModel feed;
 	HashMap<String,String> criterias = new HashMap<String,String>();
 	List<Model>            items;
-	
+
 	criterias.put("url", feed_url);
 	items = feed_table.where(criterias).entries();
 	if (items.size() == 0)
+	{
+	  System.out.println("create");
 	  feed = FeedModel.create_from_url(feed_url);
+	}
 	else
+	{
+      System.out.println("get");
       feed = (FeedModel)items.get(0);
-	SqlConnection.getSingleton().statement.execute("INSERT INTO user_feed VALUES(" + user_id + ", " + feed_id + ')');
+	}
+	System.out.println("Feed id = " + feed.getId());
+	SqlConnection.getSingleton().statement.execute("INSERT INTO user_feeds VALUES(" + user_id + ", " + feed.getId() + ')');
 	response.getWriter().write(FeedView.show(feed));
   }
 

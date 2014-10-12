@@ -12,7 +12,7 @@ public class SqlConnection
   private String     hostname      = "localhost";
   private short      port          = 3306;
   private String     database_name = "rss_aggregator";
-  private Connection connection;
+  public  Connection connection;
   public  Statement  statement;
 
   protected SqlConnection() throws SQLException, ClassNotFoundException

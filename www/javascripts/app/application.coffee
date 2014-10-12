@@ -16,8 +16,13 @@ window.application = new class
     @home_controller    = new HomeController()
     @feeds_controller   = new FeedsController()
 
-  url: (path) ->
-    "#{@host}/#{path}"
+  url: (path, params) ->
+    params_string = ''
+    if params?
+      data = []
+      data.push { name: key, value: value } for key,value of params
+      params_string = $.param data
+    "#{@host}/#{path}?#{params_string}"
 
   notification: (message, type) ->
     if type?

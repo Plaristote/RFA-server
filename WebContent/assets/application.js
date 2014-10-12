@@ -3290,7 +3290,7 @@ window.JST["menu_feeds"] = function (__obj) {
     (function() {
       var feed, _i, _len, _ref;
     
-      __out.push('<h4>subscribtions</h4>\n<ul>\n  ');
+      __out.push('<h4>subscribtions</h4>\n<ul>\n  <li class="add-feed">\n    <input type="text" class="add-feed-url" placeholder="Insert RSS feed url here..." />\n    <button>Add feed</button>\n  </li>\n  ');
     
       _ref = this.collection.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -3358,6 +3358,108 @@ window.JST["menu_user"] = function (__obj) {
   (function() {
     (function() {
       __out.push('Menu user\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["home"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<div id="header">\n  <div class="icon"></div>\n  <h2 class="title">Fertiligene Aggregator</h2>\n\n  <div id="user">\n  </div>\n</div>\n\n<div id="fertiligene">\n  <nav id="menu">\n    <div id="feed-list">\n    </div>\n  </nav>\n\n  <section id="main-content">\n  </section>\n</div>\n\n<footer id="footer">\n  Fertiligene RSS Aggregator\n</footer>\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["session_create"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
     
     }).call(this);
     
@@ -3526,8 +3628,8 @@ window.JST["session_show"] = function (__obj) {
 
     FeedCollection.prototype.model = FeedModel;
 
-    FeedCollection.prototype.url = function() {
-      return application.url('feeds');
+    FeedCollection.prototype.url = function(params) {
+      return application.url('feeds', params);
     };
 
     function FeedCollection() {
@@ -3548,24 +3650,30 @@ window.JST["session_show"] = function (__obj) {
         url: this.url(),
         success: (function(_this) {
           return function(data) {
-            window.test_feeds = [
-              {
-                id: 1,
-                title: '9-Gag',
-                favicon: 'http://assets-9gag-lol.9cache.com/static/00028/core/20140127_1390790346/img/favicon_v2.png',
-                unread: 21
-              }, {
-                id: 2,
-                title: 'The Art of Manliness',
-                favicon: 'http://aom.screenfour.com/wp-content/uploads/builder-favicon/6qBqUBP7i.ico',
-                unread: 42
-              }
-            ];
-            console.log(test_feeds);
+            console.log(data);
             _this.reset();
-            return _this.add(test_feeds);
+            return _this.add(data.feeds);
           };
         })(this)
+      });
+    };
+
+    FeedCollection.prototype.create_from_url = function(url) {
+      alert("create from url: " + url);
+      return $.ajax({
+        method: 'POST',
+        url: this.url({
+          "feed[url]": url
+        }),
+        success: (function(_this) {
+          return function() {
+            application.notification("Succesfully added feed " + url);
+            return _this.fetch();
+          };
+        })(this),
+        failure: function() {
+          return application.notification("Could not add feed " + url, 'error');
+        }
       });
     };
 
@@ -3585,6 +3693,10 @@ window.JST["session_show"] = function (__obj) {
     HomeView.prototype.template = JST['home'];
 
     HomeView.prototype.template_feeds = JST['menu_feeds'];
+
+    HomeView.prototype.events = {
+      "click .add-feed button": "add_feed"
+    };
 
     function HomeView() {
       HomeView.__super__.constructor.apply(this, arguments);
@@ -3614,6 +3726,11 @@ window.JST["session_show"] = function (__obj) {
       view = application.current_user.is_connected() ? new SessionViews.Show() : new SessionViews.Create();
       view.render();
       return this.$user.empty().append(view.$el);
+    };
+
+    HomeView.prototype.add_feed = function(e) {
+      e.preventDefault();
+      return application.feeds.create_from_url(this.$el.find('.add-feed-url').val());
     };
 
     return HomeView;
@@ -3807,8 +3924,21 @@ window.JST["session_show"] = function (__obj) {
       return this.feeds_controller = new FeedsController();
     };
 
-    _Class.prototype.url = function(path) {
-      return "" + this.host + "/" + path;
+    _Class.prototype.url = function(path, params) {
+      var data, key, params_string, value;
+      params_string = '';
+      if (params != null) {
+        data = [];
+        for (key in params) {
+          value = params[key];
+          data.push({
+            name: key,
+            value: value
+          });
+        }
+        params_string = $.param(data);
+      }
+      return "" + this.host + "/" + path + "?" + params_string;
     };
 
     _Class.prototype.notification = function(message, type) {

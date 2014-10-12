@@ -15,9 +15,10 @@ public class FeedModel extends Model
 {
   public String title;
   public String url;
+  public String link;
   public String description;
-  public Date   updated_at;
   public String favicon;
+  public Date   updated_at;
 
   public FeedModel(FeedTable table, ResultSet row) throws SQLException
   {
@@ -40,7 +41,9 @@ public class FeedModel extends Model
 
 	item.title       = parameters.get("title");
 	item.url         = parameters.get("url");
+	item.link        = parameters.get("link");
 	item.description = parameters.get("description");
+	item.favicon     = parameters.get("favicon");
 	item.save();
 	return (item);
   }
@@ -52,7 +55,9 @@ public class FeedModel extends Model
 
 	parameters.put("title",       rss_feed.title);
 	parameters.put("url",         rss_feed.url);
+	parameters.put("link",        rss_feed.link);
 	parameters.put("description", rss_feed.description);
+	parameters.put("favicon",     rss_feed.favicon);
 	return (create(parameters));
   }
 
@@ -67,13 +72,15 @@ public class FeedModel extends Model
   {
 	String query = "INSERT INTO " + table.getTableName();
 
-	query += " VALUES(";
+	query += " VALUES(0,";
 	query += '\'' + StringUtils.ecmaScriptStringEscape(title)       + "',";
 	query += '\'' + StringUtils.ecmaScriptStringEscape(url)         + "',";
+	query += '\'' + StringUtils.ecmaScriptStringEscape(link)        + "',";
 	query += '\'' + StringUtils.ecmaScriptStringEscape(description) + "',";
-	query += "Date(" + updated_at.toString() + ')';
+	query += '\'' + StringUtils.ecmaScriptStringEscape(favicon)     + "',";
+	query += '\'' + updated_at.toString() + "'";
 	query += ')';
-	return (SqlConnection.getSingleton().statement.execute(query));
+	return (insertQuery(query));
   }
 
   public boolean update() throws SQLException, Exception
@@ -82,7 +89,9 @@ public class FeedModel extends Model
 	
 	query += " SET title='"       + StringUtils.ecmaScriptStringEscape(title)       + '\'';
 	query += " AND url='"         + StringUtils.ecmaScriptStringEscape(url)         + '\'';
+	query += " AND link='"        + StringUtils.ecmaScriptStringEscape(link)        + '\'';
 	query += " AND description='" + StringUtils.ecmaScriptStringEscape(description) + '\'';
+	query += " AND favicon='"     + StringUtils.ecmaScriptStringEscape(favicon)     + '\'';
 	query += " AND updated_at='"  + updated_at.toString()                           + '\'';
 	query += " WHERE id=" + id;
 	return (SqlConnection.getSingleton().statement.execute(query));

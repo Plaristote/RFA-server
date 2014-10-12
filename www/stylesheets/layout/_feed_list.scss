@@ -12,22 +12,40 @@
 
   ul {
     li {
+      $padding:            5px;
+      $background-size:    15px;
       cursor:              pointer;
       display:             block;
       min-height:          15px;
-      padding:             5px;
-      padding-left:        25px;
+      padding:             $padding;
+      padding-left:        $padding + $background-size + 5px;
       background-repeat:   no-repeat;
       background-position: 5px  9px;
-      background-size:     15px 15px;
+      background-size:     $background-size $background-size;
+      .counter {
+        float: right;
+      }
       &:hover {
         background-color:  lightgray;
       }
       &.active {
         font-weight:       bold;
       }
-      .counter {
-        float: right;
+      &.add-feed {
+        @include outer-container(100%);
+        padding-left: $padding;
+        cursor:       auto;
+        input,button {
+          height: 30px;
+        }
+        input {
+          @include span-columns(7);
+        }
+        button {
+          @include span-columns(5);
+          font-size: 75%;
+        }
+        &:hover { background-color: transparent; }
       }
     }
   }
