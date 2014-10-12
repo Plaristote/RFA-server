@@ -55,6 +55,7 @@ public class FeedView
       view.object();
       view.property("id",               Long.toString(post.getId()));
       view.property("title",            post.title);
+      view.property("description",      post.description);
       view.property("category",         post.category);
       view.property("comments",         post.comments);
       view.property("link",             post.link);

@@ -138,7 +138,7 @@ public class FeedModel extends Model
     FeedPostTable          table     = new FeedPostTable();
     HashMap<String,String> criterias = new HashMap<String,String>();
 
-    criterias.put("feed_id", Long.toString(id));
+    criterias.put("feed_id", Long.toString(getId()));
     return (table.where(criterias).entries());
   }
 

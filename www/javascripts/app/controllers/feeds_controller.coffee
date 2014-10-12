@@ -9,8 +9,14 @@ class window.FeedsController extends Backbone.Router
   index: ->
     ;
 
-  show: ->
-    ;
+  show: (id) ->
+    feed         = application.feeds.get id
+    feed.fetchPosts (posts) =>
+      console.log posts
+      view       = new FeedView()
+      view.feed  = feed
+      view.posts = posts
+      view.render()
 
   create: ->
     ;

@@ -1,0 +1,13 @@
+<h1><%= @feed.get 'title' %></h1>
+<div class='feed-description'><%= @feed.get 'description' %></div>
+
+<div class='feed-posts'>
+  <% for item in @posts.models: %>
+    <div class='post'>
+      <a href='<%= item.get 'link' %>' target='blank'><h2><%= item.get 'title' %></h2></a>
+      <div class='description'>
+        <% __out.push(item.get 'description') %>
+      </div>
+    </div>
+  <% end %>
+</div>

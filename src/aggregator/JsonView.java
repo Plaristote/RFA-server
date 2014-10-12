@@ -8,7 +8,7 @@ public class JsonView
   public void property(String key, String value)
   {
     if (needs_coma) { json += ','; }
-    json += '\"' + key + "\":\"" + StringUtils.ecmaScriptStringEscape(value, '"') + '"';
+    json += '\"' + key + "\":" + (value == null ? "null" : '"' + StringUtils.ecmaScriptStringEscape(value, '"') + '"');
     needs_coma = true;
   }
   

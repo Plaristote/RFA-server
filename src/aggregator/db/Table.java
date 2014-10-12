@@ -14,7 +14,7 @@ public abstract class Table
 	String    query   = "SELECT * FROM " + getTableName() + " WHERE id='" + id + '\'';
 	ResultSet results = SqlConnection.getSingleton().statement.executeQuery(query);
 	
-	if (results.next())
+	if (!(results.next()))
 	  throw new Exception("No item with id " + id);
 	return (createModel(results));
   }

@@ -3,7 +3,8 @@ class window.HomeView extends Backbone.View
   template_feeds: JST['menu_feeds']
 
   events: {
-    "click .add-feed button": "add_feed"
+    "click .add-feed button":     "add_feed"
+    "click #feed-list [data-id]": "show_feed"
   }
 
   constructor: () ->
@@ -35,3 +36,8 @@ class window.HomeView extends Backbone.View
   add_feed: (e) ->
     e.preventDefault()
     application.feeds.create_from_url @$el.find('.add-feed-url').val()
+
+  show_feed: (e) ->
+    e.preventDefault()
+    feed_id = $(e.currentTarget).data 'id'
+    Backbone.history.navigate "feeds/#{feed_id}", true

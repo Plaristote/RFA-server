@@ -3369,6 +3369,81 @@ window.JST["menu_user"] = function (__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["feed"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      var item, _i, _len, _ref;
+    
+      __out.push('<h1>');
+    
+      __out.push(__sanitize(this.feed.get('title')));
+    
+      __out.push('</h1>\n<div class=\'feed-description\'>');
+    
+      __out.push(__sanitize(this.feed.get('description')));
+    
+      __out.push('</div>\n\n<div class=\'feed-posts\'>\n  ');
+    
+      _ref = this.posts.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        item = _ref[_i];
+        __out.push('\n    <div class=\'post\'>\n      <a href=\'');
+        __out.push(__sanitize(item.get('link')));
+        __out.push('\' target=\'blank\'><h2>');
+        __out.push(__sanitize(item.get('title')));
+        __out.push('</h2></a>\n      <div class=\'description\'>\n        ');
+        __out.push(item.get('description'));
+        __out.push('\n      </div>\n    </div>\n  ');
+      }
+    
+      __out.push('\n</div>\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["home"] = function (__obj) {
   if (!__obj) __obj = {};
   var __out = [], __capture = function(callback) {
@@ -3535,10 +3610,45 @@ window.JST["session_show"] = function (__obj) {
     }
 
     FeedModel.prototype.url = function() {
-      return application.url('feeds');
+      return application.url('feeds', {
+        id: this.get('id')
+      });
+    };
+
+    FeedModel.prototype.fetchPosts = function(callback) {
+      return $.ajax({
+        method: 'GET',
+        url: this.url(),
+        success: function(data) {
+          var collection;
+          collection = new PostCollection();
+          collection.add(data.posts);
+          console.log(data, collection);
+          return callback(collection);
+        }
+      });
     };
 
     return FeedModel;
+
+  })(Backbone.Model);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.PostModel = (function(_super) {
+    __extends(PostModel, _super);
+
+    function PostModel() {
+      return PostModel.__super__.constructor.apply(this, arguments);
+    }
+
+    PostModel.prototype.url = null;
+
+    return PostModel;
 
   })(Backbone.Model);
 
@@ -3687,6 +3797,52 @@ window.JST["session_show"] = function (__obj) {
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+  window.PostCollection = (function(_super) {
+    __extends(PostCollection, _super);
+
+    function PostCollection() {
+      return PostCollection.__super__.constructor.apply(this, arguments);
+    }
+
+    PostCollection.prototype.model = PostModel;
+
+    return PostCollection;
+
+  })(Backbone.Collection);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.FeedView = (function(_super) {
+    __extends(FeedView, _super);
+
+    function FeedView() {
+      return FeedView.__super__.constructor.apply(this, arguments);
+    }
+
+    FeedView.prototype.template = JST['feed'];
+
+    FeedView.prototype.render = function() {
+      this.$el.html(this.template({
+        feed: this.feed,
+        posts: this.posts
+      }));
+      return $('#main-content').empty().append(this.$el);
+    };
+
+    return FeedView;
+
+  })(Backbone.View);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
   window.HomeView = (function(_super) {
     __extends(HomeView, _super);
 
@@ -3695,7 +3851,8 @@ window.JST["session_show"] = function (__obj) {
     HomeView.prototype.template_feeds = JST['menu_feeds'];
 
     HomeView.prototype.events = {
-      "click .add-feed button": "add_feed"
+      "click .add-feed button": "add_feed",
+      "click #feed-list [data-id]": "show_feed"
     };
 
     function HomeView() {
@@ -3731,6 +3888,13 @@ window.JST["session_show"] = function (__obj) {
     HomeView.prototype.add_feed = function(e) {
       e.preventDefault();
       return application.feeds.create_from_url(this.$el.find('.add-feed-url').val());
+    };
+
+    HomeView.prototype.show_feed = function(e) {
+      var feed_id;
+      e.preventDefault();
+      feed_id = $(e.currentTarget).data('id');
+      return Backbone.history.navigate("feeds/" + feed_id, true);
     };
 
     return HomeView;
@@ -3855,7 +4019,20 @@ window.JST["session_show"] = function (__obj) {
 
     FeedsController.prototype.index = function() {};
 
-    FeedsController.prototype.show = function() {};
+    FeedsController.prototype.show = function(id) {
+      var feed;
+      feed = application.feeds.get(id);
+      return feed.fetchPosts((function(_this) {
+        return function(posts) {
+          var view;
+          console.log(posts);
+          view = new FeedView();
+          view.feed = feed;
+          view.posts = posts;
+          return view.render();
+        };
+      })(this));
+    };
 
     FeedsController.prototype.create = function() {};
 
