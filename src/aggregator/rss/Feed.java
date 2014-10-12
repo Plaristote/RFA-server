@@ -37,11 +37,6 @@ public class Feed
   }
 }
 
-class FeedItem
-{
-	public String title, description, link, category, comments, pubDate;
-}
-
 class SaxRssHandler  extends org.xml.sax.helpers.DefaultHandler {
 	public Feed feed;
 

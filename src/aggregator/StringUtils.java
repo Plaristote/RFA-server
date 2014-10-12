@@ -29,4 +29,11 @@ public class StringUtils {
 	}
 	return (new_string);
   }
+  
+  public static String sqlField(String str)
+  {
+	if (str == null)
+	  return ("NULL");
+	return ('\'' + ecmaScriptStringEscape(str) + '\'');
+  }
 }

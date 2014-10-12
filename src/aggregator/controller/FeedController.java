@@ -10,6 +10,7 @@ import aggregator.db.Model;
 import aggregator.db.SqlConnection;
 import aggregator.model.FeedModel;
 import aggregator.table.FeedTable;
+import aggregator.table.UserFeedTable;
 import aggregator.view.FeedView;
 
 public class FeedController extends Controller
@@ -25,6 +26,7 @@ public class FeedController extends Controller
 
 	criterias.put("user_feeds.user_id", user_id);
 	entries = feed_table.where(criterias).join("user_feeds", "feed").entries();
+	response.addHeader("Content-Type", "application/json");
 	response.getWriter().write(FeedView.index(entries));
   }
 
@@ -44,18 +46,13 @@ public class FeedController extends Controller
 	criterias.put("url", feed_url);
 	items = feed_table.where(criterias).entries();
 	if (items.size() == 0)
-	{
-	  System.out.println("create");
 	  feed = FeedModel.create_from_url(feed_url);
-	}
 	else
-	{
-      System.out.println("get");
       feed = (FeedModel)items.get(0);
-	}
-	System.out.println("Feed id = " + feed.getId());
-	SqlConnection.getSingleton().statement.execute("INSERT INTO user_feeds VALUES(" + user_id + ", " + feed.getId() + ')');
-	response.getWriter().write(FeedView.show(feed));
+	feed.reloadFromSource();
+	UserFeedTable.linkUserToFeed(user_id, Long.toString(feed.getId()));
+	response.addHeader("Content-Type", "application/json");
+    response.getWriter().write(FeedView.show(feed));
   }
 
   @Override
@@ -81,9 +78,7 @@ public class FeedController extends Controller
     FeedTable feed_table = new FeedTable();
     FeedModel feed       = (FeedModel)feed_table.find(feed_id);
 
-    if (feed != null)
-    {
-      response.getWriter().write("Coucou tu veux voir mon sexe (" + feed_id + ") ?");
-    }
+	response.addHeader("Content-Type", "application/json");
+    response.getWriter().write(FeedView.show(feed));
   }
 }

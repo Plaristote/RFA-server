@@ -13,13 +13,13 @@ CREATE TABLE feeds      (id          int NOT NULL AUTO_INCREMENT,
                          PRIMARY KEY(id));
 
 CREATE TABLE feed_posts (id               int NOT NULL AUTO_INCREMENT,
-                         slug             varchar(100),
+                         feed_id          int,
                          title            varchar(256),
                          category         varchar(256),
                          comments         varchar(256),
                          link             varchar(256),
                          description      text,
-                         publication_date date,
+                         publication_date varchar(64),
                          source           text,
                          PRIMARY KEY(id));
 
