@@ -3298,7 +3298,7 @@ window.JST["menu_feeds"] = function (__obj) {
         __out.push('\n    <li data-id="');
         __out.push(__sanitize(feed.get('id')));
         __out.push('" style="background-image: url(');
-        __out.push(__sanitize(feed.get('favicon')));
+        __out.push(__sanitize(feed.favicon()));
         __out.push(');">\n      ');
         __out.push(__sanitize(feed.get('title')));
         __out.push('\n      <div class="counter">');
@@ -3613,6 +3613,16 @@ window.JST["session_show"] = function (__obj) {
       return application.url('feeds', {
         id: this.get('id')
       });
+    };
+
+    FeedModel.prototype.favicon = function() {
+      var url;
+      url = this.get('favicon');
+      if ((url != null) && url !== '') {
+        return url;
+      } else {
+        return application.url('assets/images/default-icon-rss.png');
+      }
     };
 
     FeedModel.prototype.fetchPosts = function(callback) {
@@ -4113,9 +4123,9 @@ window.JST["session_show"] = function (__obj) {
             value: value
           });
         }
-        params_string = $.param(data);
+        params_string = '?' + $.param(data);
       }
-      return "" + this.host + "/" + path + "?" + params_string;
+      return "" + this.host + "/" + path + params_string;
     };
 
     _Class.prototype.notification = function(message, type) {

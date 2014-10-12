@@ -5,7 +5,7 @@
     <button>Add feed</button>
   </li>
   <% for feed in @collection.models: %>
-    <li data-id="<%= feed.get 'id' %>" style="background-image: url(<%= feed.get 'favicon' %>);">
+    <li data-id="<%= feed.get 'id' %>" style="background-image: url(<%= feed.favicon() %>);">
       <%= feed.get 'title' %>
       <div class="counter"><%= feed.get 'unread' %></div>
     </li>

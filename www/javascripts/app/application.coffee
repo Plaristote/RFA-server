@@ -21,8 +21,8 @@ window.application = new class
     if params?
       data = []
       data.push { name: key, value: value } for key,value of params
-      params_string = $.param data
-    "#{@host}/#{path}?#{params_string}"
+      params_string = '?' + $.param data
+    "#{@host}/#{path}#{params_string}"
 
   notification: (message, type) ->
     if type?
