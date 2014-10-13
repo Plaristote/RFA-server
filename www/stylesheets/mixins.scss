@@ -1,0 +1,5 @@
+@mixin my-box {
+  $color: lightgray;
+  border: 1px solid $color;
+  box-shadow: $color 0px 0px 5px;
+}

@@ -1,6 +1,9 @@
 @import "bourbon/bourbon";
 @import "neat/neat";
 @import "bitters/base";
+
+@import "mixins";
 @import "layout/layout";
 
 @import "pages/home";
+@import "pages/feed";

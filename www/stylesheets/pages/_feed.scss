@@ -1,0 +1,53 @@
+#main-content {
+  .feed-page {
+    @include my-box;
+    border-right: none;
+    padding: 10px;
+    margin-top: 5px;
+
+    > .controls {
+      float: right;
+    }
+
+    > h1 {
+      text-transform: capitalize;
+      font-size: 2em;
+    }
+
+    > .feed-description {
+      font-style: italic;
+    }
+
+    > .feed-posts {
+      > .post {
+        @include my-box;
+        margin-top: 20px;
+        $padding: 10px;
+
+        > .minimize {
+          margin: $padding;
+          float: right;
+          font-size: 75%;
+        }
+
+        > a h2 {
+          color: $base-font-color;
+          font-size: 1.7em;
+          text-transform: capitalize;
+          padding: $padding;
+          border-bottom: 1px solid lightgray;
+        }
+
+        > .font-description {
+          padding: $padding;
+          /* potential style for the rss feed description */
+        }
+      }
+      > .read {
+        > a h2 {
+          color: lightgray;
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 #feed-list {
-  $inverse-color: #888888;
+  @include my-box;
   margin:  5px;
-  box-shadow: 0px 0px 20px $inverse-color;
 
   h4 {
     text-transform: capitalize;

@@ -12,7 +12,6 @@ class window.FeedsController extends Backbone.Router
   show: (id) ->
     feed         = application.feeds.get id
     feed.fetchPosts (posts) =>
-      console.log posts
       view       = new FeedView()
       view.feed  = feed
       view.posts = posts

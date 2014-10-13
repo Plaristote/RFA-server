@@ -15,6 +15,5 @@ class window.FeedModel extends Backbone.Model
       success: (data) ->
         collection = new PostCollection()
         collection.add data.posts
-        console.log data, collection
         callback collection
     }

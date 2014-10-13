@@ -3410,7 +3410,7 @@ window.JST["feed"] = function (__obj) {
     (function() {
       var item, _i, _len, _ref;
     
-      __out.push('<h1>');
+      __out.push('<div class="controls">\n  <button class="minimize">minimize</button>\n</div>\n<h1>');
     
       __out.push(__sanitize(this.feed.get('title')));
     
@@ -3418,21 +3418,27 @@ window.JST["feed"] = function (__obj) {
     
       __out.push(__sanitize(this.feed.get('description')));
     
-      __out.push('</div>\n\n<div class=\'feed-posts\'>\n  ');
+      __out.push('</div>\n\n<section class=\'feed-posts\'>\n  ');
     
       _ref = this.posts.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
-        __out.push('\n    <div class=\'post\'>\n      <a href=\'');
+        __out.push('\n    <article class=\'post ');
+        if (item.hasBeenRead()) {
+          __out.push(__sanitize('read'));
+        }
+        __out.push('\' data-id="');
+        __out.push(__sanitize(item.get('id')));
+        __out.push('">\n      <button class="minimize">minimize</button>\n      <a href=\'');
         __out.push(__sanitize(item.get('link')));
         __out.push('\' target=\'blank\'><h2>');
         __out.push(__sanitize(item.get('title')));
         __out.push('</h2></a>\n      <div class=\'description\'>\n        ');
         __out.push(item.get('description'));
-        __out.push('\n      </div>\n    </div>\n  ');
+        __out.push('\n      </div>\n    </article>\n  ');
       }
     
-      __out.push('\n</div>\n');
+      __out.push('\n</section>\n');
     
     }).call(this);
     
@@ -3633,7 +3639,6 @@ window.JST["session_show"] = function (__obj) {
           var collection;
           collection = new PostCollection();
           collection.add(data.posts);
-          console.log(data, collection);
           return callback(collection);
         }
       });
@@ -3657,6 +3662,17 @@ window.JST["session_show"] = function (__obj) {
     }
 
     PostModel.prototype.url = null;
+
+    PostModel.prototype.has_been_read = false;
+
+    PostModel.prototype.hasBeenRead = function() {
+      return this.has_been_read;
+    };
+
+    PostModel.prototype.setAsRead = function() {
+      this.has_been_read = true;
+      return this.trigger('set_as_read', this);
+    };
 
     return PostModel;
 
@@ -3833,14 +3849,77 @@ window.JST["session_show"] = function (__obj) {
       return FeedView.__super__.constructor.apply(this, arguments);
     }
 
+    FeedView.prototype.className = 'feed-page';
+
     FeedView.prototype.template = JST['feed'];
 
+    FeedView.prototype.events = {
+      "click .controls button.minimize": "minimize_posts",
+      "click .post     button.minimize": "minimize_post",
+      "click .post     > a": "open_post",
+      "dblclick .post  > a": "double_clicked_post",
+      "click .post": "clicked_on_post"
+    };
+
     FeedView.prototype.render = function() {
+      var post, _i, _len, _ref, _results;
       this.$el.html(this.template({
         feed: this.feed,
         posts: this.posts
       }));
-      return $('#main-content').empty().append(this.$el);
+      $('#main-content').empty().append(this.$el);
+      _ref = this.posts.models;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        post = _ref[_i];
+        _results.push(post.on('set_as_read', this.set_post_as_read, this));
+      }
+      return _results;
+    };
+
+    FeedView.prototype.minimize_posts = function(e) {
+      e.preventDefault();
+      return $('.post > .description', this.$el).slideUp();
+    };
+
+    FeedView.prototype.minimize_post = function(e) {
+      var $post;
+      $post = this.get_post_from_event(e);
+      return $post.find('.description').slideUp();
+    };
+
+    FeedView.prototype.open_post = function(e) {
+      var $post;
+      $post = this.get_post_from_event(e);
+      if (!$post.find('.description').is(':visible')) {
+        e.preventDefault();
+        return $post.find('.description').slideDown();
+      }
+    };
+
+    FeedView.prototype.double_clicked_post = function(e) {
+      var $post;
+      $post = this.get_post_from_event(e);
+      return $post.find('.description').hide();
+    };
+
+    FeedView.prototype.get_post_from_event = function(e) {
+      console.log($(e.currentTarget).parents('.post'));
+      return $(e.currentTarget).parents('.post');
+    };
+
+    FeedView.prototype.set_post_as_read = function(post) {
+      console.log('set_post_as_read', post);
+      return $(".post[data-id=" + (post.get('id')) + "]", this.$el).addClass('read');
+    };
+
+    FeedView.prototype.clicked_on_post = function(e) {
+      var post, post_id;
+      if (!($(e.target).is('button') || $(e.target).is('h2'))) {
+        post_id = $(e.currentTarget).data('id');
+        post = this.posts.get(post_id);
+        return post.setAsRead();
+      }
     };
 
     return FeedView;
@@ -4035,7 +4114,6 @@ window.JST["session_show"] = function (__obj) {
       return feed.fetchPosts((function(_this) {
         return function(posts) {
           var view;
-          console.log(posts);
           view = new FeedView();
           view.feed = feed;
           view.posts = posts;
