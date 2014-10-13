@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import aggregator.Controller;
+import aggregator.FeedScheduler;
 import aggregator.StringUtils;
 import aggregator.db.Model;
 import aggregator.db.SqlConnection;
@@ -80,5 +81,7 @@ public class FeedController extends Controller
 
 	response.addHeader("Content-Type", "application/json");
     response.getWriter().write(FeedView.show(feed));
+
+    FeedScheduler.scheduleUpdate(feed);
   }
 }

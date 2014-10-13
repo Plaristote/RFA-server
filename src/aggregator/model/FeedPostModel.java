@@ -54,14 +54,14 @@ public class FeedPostModel extends Model
   {
 	String query = "UPDATE " + table.getTableName();
 	
-	query += " SET feed_id=" + Long.toString(feed_id);
+	query += " SET source="        + StringUtils.sqlField(source);
 	query += " AND title="       + StringUtils.sqlField(title);
 	query += " AND link="        + StringUtils.sqlField(link);
 	query += " AND description=" + StringUtils.sqlField(description);
 	query += " AND publication_date="  + StringUtils.sqlField(publication_date);
 	query += " AND category="        + StringUtils.sqlField(category);
 	query += " AND comments="        + StringUtils.sqlField(comments);
-	query += " AND source="        + StringUtils.sqlField(source);
+	query += " AND feed_id=" + Long.toString(feed_id);
 	query += " WHERE id=" + Long.toString(getId());
 	return (SqlConnection.getSingleton().statement.execute(query));
   }

@@ -155,5 +155,6 @@ public class FeedModel extends Model
       return ((FeedPostModel)items.get(0));
     return (null);
   }
-
 }
+
+
