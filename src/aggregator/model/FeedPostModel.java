@@ -1,5 +1,6 @@
 package aggregator.model;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,6 +14,7 @@ public class FeedPostModel extends Model
 {
 	public long   feed_id;
 	public String title, description, link, category, comments, publication_date, source;
+	public Date   created_at;
 
 	public FeedPostModel(FeedPostTable table, ResultSet row) throws SQLException
 	{
@@ -25,6 +27,7 @@ public class FeedPostModel extends Model
 	  comments         = row.getString("comments");
 	  source           = row.getString("source");
 	  publication_date = row.getString("publication_date");
+	  created_at       = row.getDate("created_at");
 	}
 
 	public FeedPostModel(Table table) throws SQLException
@@ -37,6 +40,7 @@ public class FeedPostModel extends Model
   {
 	String query = "INSERT INTO " + table.getTableName();
 
+	created_at = new Date((new java.util.Date()).getTime());	
 	query += " VALUES(0,";
 	query += Long.toString(feed_id) + ',';
 	query += StringUtils.sqlField(title)       + ',';
@@ -45,7 +49,8 @@ public class FeedPostModel extends Model
 	query += StringUtils.sqlField(link) + ',';
 	query += StringUtils.sqlField(description)     + ',';
 	query += StringUtils.sqlField(publication_date) + ',';
-	query += StringUtils.sqlField(source);
+	query += StringUtils.sqlField(source) + ',';
+	query += '\'' + created_at.toString() + '\'';
 	query += ')';
 	return (insertQuery(query));
   }

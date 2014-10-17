@@ -33,13 +33,13 @@ public class QueryBuilder
 
   public QueryBuilder limit(int value)
   {
-	limit = "LIMIT " + value;
+	limit = Integer.toString(value);
 	return (this);
   }
 
   public QueryBuilder skip(int value)
   {
-	offset = "OFFSET " + value;
+	offset = Integer.toString(value);
 	return (this);
   }
 
@@ -103,7 +103,7 @@ public class QueryBuilder
 	{
 	  query += " ORDER BY " + order_by;
 	  if (order_sort != null)
-		query += order_sort;
+		query += ' ' + order_sort;
 	}
 	return (query);
   }

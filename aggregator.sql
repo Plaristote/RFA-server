@@ -21,6 +21,7 @@ CREATE TABLE feed_posts (id               int NOT NULL AUTO_INCREMENT,
                          description      text,
                          publication_date varchar(64),
                          source           text,
+                         created_at       date,
                          PRIMARY KEY(id));
 
 

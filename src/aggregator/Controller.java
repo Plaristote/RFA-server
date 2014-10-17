@@ -89,6 +89,13 @@ public class Controller
 	return (parameters);
   }
   
+  protected String getParameter(String parameter, String default_value)
+  {
+	if (request.getParameter(parameter) != null)
+	  return (request.getParameter(parameter));
+	return (default_value);
+  }
+  
   protected String user_id;
 
   protected void require_authentified_user() throws Exception

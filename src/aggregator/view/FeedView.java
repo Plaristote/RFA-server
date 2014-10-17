@@ -26,13 +26,21 @@ public class FeedView
 	view.end_array();
 	return (view.render());
   }
-
+  
   public static String show(FeedModel feed) throws SQLException, Exception
+  {
+	JsonView view = new JsonView();
+	
+	render_feed(feed, view);
+	return (view.render());
+  }
+
+  public static String show(FeedModel feed, List<Model> posts) throws SQLException, Exception
   {
 	JsonView view = new JsonView();
 
 	render_feed(feed, view);
-	render_posts(feed, view);
+	render_posts(posts, view);
 	return (view.render());
   }
 
@@ -45,10 +53,10 @@ public class FeedView
     view.property("favicon",     item.favicon);
   }
 
-  private static void render_posts(FeedModel item, JsonView view) throws SQLException, Exception
+  private static void render_posts(List<Model> posts, JsonView view) throws SQLException, Exception
   {
     view.array("posts");
-    for (Model _post: item.getPosts())
+    for (Model _post: posts)
     {
       FeedPostModel post = (FeedPostModel)_post;
 

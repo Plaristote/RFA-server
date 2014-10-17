@@ -9,6 +9,7 @@ import java.util.Map;
 
 import aggregator.StringUtils;
 import aggregator.db.Model;
+import aggregator.db.QueryBuilder;
 import aggregator.db.SqlConnection;
 import aggregator.table.FeedPostTable;
 import aggregator.table.FeedTable;
@@ -133,13 +134,13 @@ public class FeedModel extends Model
 	}
   }
   
-  public List<Model>   getPosts() throws Exception, SQLException
+  public QueryBuilder   getPosts() throws Exception, SQLException
   {
     FeedPostTable          table     = new FeedPostTable();
     HashMap<String,String> criterias = new HashMap<String,String>();
 
     criterias.put("feed_id", Long.toString(getId()));
-    return (table.where(criterias).entries());
+    return (table.where(criterias));
   }
 
   public FeedPostModel getPostFromLink(String link) throws Exception, SQLException

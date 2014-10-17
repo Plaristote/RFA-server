@@ -76,11 +76,19 @@ public class FeedController extends Controller
   {
     require_authentified_user();
 
-    FeedTable feed_table = new FeedTable();
-    FeedModel feed       = (FeedModel)feed_table.find(feed_id);
+    FeedTable   feed_table = new FeedTable();
+    FeedModel   feed       = (FeedModel)feed_table.find(feed_id);
+    List<Model> posts;
+    int         page, limit;
+
+    page  = Integer.parseInt(getParameter("page",  "0"));
+    limit = Integer.parseInt(getParameter("limit", "50"));
+    if (limit < 1 || limit > 250)
+      limit = 50;
+    posts = feed.getPosts().order_by("created_at", "desc").limit(limit).skip(page * limit).entries();
 
 	response.addHeader("Content-Type", "application/json");
-    response.getWriter().write(FeedView.show(feed));
+    response.getWriter().write(FeedView.show(feed, posts));
 
     FeedScheduler.scheduleUpdate(feed);
   }
