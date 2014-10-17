@@ -123,8 +123,6 @@ public class FeedModel extends Model
 		feed_post.feed_id        = getId();
 		feed_post.link           = item.link;
 	  }
-	  else
-		System.out.println("Post already exists as ID " + feed_post.getId());
 	  feed_post.title            = item.title;
 	  feed_post.category         = item.category;
 	  feed_post.comments         = item.comments;
