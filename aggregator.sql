@@ -1,3 +1,6 @@
+CREATE DATABASE rss_aggregator;
+USE rss_aggregator;
+
 CREATE TABLE users      (id       int NOT NULL AUTO_INCREMENT,
                          email    varchar(64),
                          password varchar(64),
