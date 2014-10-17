@@ -56,6 +56,7 @@ class FeedUpdater implements Runnable {
 
 		  feed.reloadFromSource();
 		  hasBeenUpdated();
+		  System.out.println("Feed updated");
 	    }
 	    catch (Exception e) {
 	      System.out.println(e.getMessage());
@@ -68,7 +69,8 @@ class FeedUpdater implements Runnable {
 	  if (last_run != 0) {
 	    long timestamp = (new java.util.Date()).getTime();
 
-	    return (timestamp - last_run > 60);
+	    System.out.println("Last run: " + last_run + ", timestamp: " + timestamp);
+	    return (timestamp - last_run > 60000);
 	  }
 	  return (true);
 	}
