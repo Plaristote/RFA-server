@@ -21,7 +21,7 @@ public class FeedModel extends Model
   public String link;
   public String description;
   public String favicon;
-  public Date   updated_at;
+  public  java.sql.Timestamp  updated_at;
   private aggregator.rss.Feed rss_feed;
 
   public FeedModel(FeedTable table, ResultSet row) throws SQLException
@@ -31,7 +31,7 @@ public class FeedModel extends Model
 	url         = row.getString("url");
 	description = row.getString("description");
 	favicon     = row.getString("favicon");
-	updated_at  = row.getDate("updated_at");
+	updated_at  = row.getTimestamp("updated_at");
   }
 
   public FeedModel(FeedTable table) throws SQLException
@@ -71,7 +71,7 @@ public class FeedModel extends Model
   @Override
   public boolean save() throws SQLException, Exception
   {
-	updated_at = new Date((new java.util.Date()).getTime());
+	updated_at = new java.sql.Timestamp((new java.util.Date()).getTime());
 	return (super.save());
   }
 
@@ -114,16 +114,20 @@ public class FeedModel extends Model
 	link        = rss_feed.link;
 	description = rss_feed.description;
 	favicon     = rss_feed.favicon;
+	int i = 0;
 	for (aggregator.rss.FeedItem item: rss_feed.items)
 	{
 	  FeedPostModel feed_post = getPostFromLink(item.link);
 
 	  if (feed_post == null)
 	  {
+		i++;
 		feed_post                = new FeedPostModel(table);
 		feed_post.feed_id        = getId();
 		feed_post.link           = item.link;
 	  }
+	  else
+		System.out.println("Post already exists as ID " + feed_post.getId());
 	  feed_post.title            = item.title;
 	  feed_post.category         = item.category;
 	  feed_post.comments         = item.comments;

@@ -9,7 +9,7 @@ CREATE TABLE feeds      (id          int NOT NULL AUTO_INCREMENT,
                          link        varchar(256),
                          description text, 
                          favicon     varchar(256),
-                         updated_at  date,
+                         updated_at  timestamp,
                          PRIMARY KEY(id));
 
 CREATE TABLE feed_posts (id               int NOT NULL AUTO_INCREMENT,
@@ -21,7 +21,7 @@ CREATE TABLE feed_posts (id               int NOT NULL AUTO_INCREMENT,
                          description      text,
                          publication_date varchar(64),
                          source           text,
-                         created_at       date,
+                         created_at       timestamp,
                          PRIMARY KEY(id));
 
 
