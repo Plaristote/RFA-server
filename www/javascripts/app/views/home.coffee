@@ -40,4 +40,4 @@ class window.HomeView extends Backbone.View
   show_feed: (e) ->
     e.preventDefault()
     feed_id = $(e.currentTarget).data 'id'
-    Backbone.history.navigate "feeds/#{feed_id}", true
+    Backbone.history.loadUrl "feeds/#{feed_id}"

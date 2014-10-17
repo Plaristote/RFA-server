@@ -2,11 +2,14 @@ package aggregator.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import aggregator.StringUtils;
 import aggregator.db.Model;
 import aggregator.db.SqlConnection;
 import aggregator.db.Table;
+import aggregator.table.ReadListTable;
+import aggregator.table.UserFeedTable;
 
 public class UserModel extends Model {
 	public String email, password;
@@ -42,4 +45,15 @@ public class UserModel extends Model {
 		return (insertQuery(query));
 	}
 
+	@SuppressWarnings("serial")
+	@Override
+	public void destroy() throws Exception, SQLException
+	{
+	  UserFeedTable user_feeds = new UserFeedTable();
+	  ReadListTable read_list  = new ReadListTable();
+
+	  user_feeds.where(new HashMap<String,String>() {{ put("user_id", Long.toString(getId())); }}).destroy();
+	  read_list.where (new HashMap<String,String>() {{ put("user_id", Long.toString(getId())); }}).destroy();
+	  super.destroy();
+	}
 }

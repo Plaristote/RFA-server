@@ -12,6 +12,8 @@ import aggregator.db.QueryBuilder;
 import aggregator.db.SqlConnection;
 import aggregator.table.FeedPostTable;
 import aggregator.table.FeedTable;
+import aggregator.table.ReadListTable;
+import aggregator.table.UserFeedTable;
 
 public class FeedModel extends Model
 {
@@ -133,12 +135,12 @@ public class FeedModel extends Model
 	}
   }
   
-  public QueryBuilder   getPosts() throws Exception, SQLException
+  public QueryBuilder  getPosts() throws Exception, SQLException
   {
     FeedPostTable          table     = new FeedPostTable();
     HashMap<String,String> criterias = new HashMap<String,String>();
 
-    criterias.put("feed_id", Long.toString(getId()));
+    criterias.put("feed_posts.feed_id", Long.toString(getId()));
     return (table.where(criterias));
   }
 
@@ -154,6 +156,19 @@ public class FeedModel extends Model
     if (items.size() > 0)
       return ((FeedPostModel)items.get(0));
     return (null);
+  }
+  
+  @SuppressWarnings("serial")
+  @Override
+  public void destroy() throws Exception, SQLException
+  {
+	UserFeedTable user_feeds = new UserFeedTable();
+	ReadListTable read_list  = new ReadListTable();
+
+	user_feeds.where(new HashMap<String,String>() {{ put("feed_id", Long.toString(getId())); }}).destroy();
+	read_list.where (new HashMap<String,String>() {{ put("feed_id", Long.toString(getId())); }}).destroy();
+	getPosts().destroy();
+	super.destroy();
   }
 }
 

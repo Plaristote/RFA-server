@@ -72,6 +72,13 @@ public class QueryBuilder
 	  _entries.add(table.createModel(results));
 	return (_entries);
   }
+  
+  public void destroy() throws ClassNotFoundException, SQLException
+  {
+	String query = "DELETE FROM " + getTableReference() + getCriterias();
+	
+	SqlConnection.getSingleton().statement.execute(query);
+  }
 
   public String toString()
   {

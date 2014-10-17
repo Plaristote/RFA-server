@@ -2,12 +2,14 @@ package aggregator.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import aggregator.StringUtils;
 import aggregator.db.Model;
 import aggregator.db.SqlConnection;
 import aggregator.db.Table;
 import aggregator.table.FeedPostTable;
+import aggregator.table.ReadListTable;
 
 public class FeedPostModel extends Model
 {
@@ -29,10 +31,22 @@ public class FeedPostModel extends Model
 	  created_at       = row.getTimestamp("created_at");
 	}
 
-	public FeedPostModel(Table table) throws SQLException
-	{
-	  super(table);
-	}
+  public FeedPostModel(Table table) throws SQLException
+  {
+    super(table);
+  }
+  
+  @SuppressWarnings("serial")
+  public boolean hasBeenReadByUser(final String user_id) throws ClassNotFoundException, SQLException
+  {
+	ReadListTable table = new ReadListTable();
+
+	return (table.where(new HashMap<String,String>() {{
+	  put("post_id", Long.toString(getId()));
+	  put("user_id", user_id);
+	  put("feed_id", Long.toString(feed_id));
+	}}).entries().size() > 0);
+  }
 
   @Override
   public boolean create() throws Exception, SQLException

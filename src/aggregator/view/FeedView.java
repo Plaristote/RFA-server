@@ -35,12 +35,12 @@ public class FeedView
 	return (view.render());
   }
 
-  public static String show(FeedModel feed, List<Model> posts) throws SQLException, Exception
+  public static String show(FeedModel feed, List<Model> posts, String user_id) throws SQLException, Exception
   {
 	JsonView view = new JsonView();
 
 	render_feed(feed, view);
-	render_posts(posts, view);
+	render_posts(posts, user_id, view);
 	return (view.render());
   }
 
@@ -53,7 +53,7 @@ public class FeedView
     view.property("favicon",     item.favicon);
   }
 
-  private static void render_posts(List<Model> posts, JsonView view) throws SQLException, Exception
+  private static void render_posts(List<Model> posts, String user_id, JsonView view) throws SQLException, Exception
   {
     view.array("posts");
     for (Model _post: posts)
@@ -69,6 +69,7 @@ public class FeedView
       view.property("link",             post.link);
       view.property("publication_date", post.publication_date);
       view.property("source",           post.source);
+      view.property("has_been_read",    post.hasBeenReadByUser(user_id));
       view.end_object();
     }
     view.end_array();

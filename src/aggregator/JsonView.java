@@ -18,6 +18,12 @@ public class JsonView
 	json += '\"' + key + "\": " + value;
     needs_coma = true;
   }
+
+  public void property(String key, boolean value) {
+	if (needs_coma) { json += ','; }
+	json += '\"' + key + "\": " + (value ? "true" : "false");
+    needs_coma = true;
+  }
   
   public void value(String value)
   {
@@ -77,4 +83,5 @@ public class JsonView
   {
 	return ('{' + json + '}');
   }
+
 }

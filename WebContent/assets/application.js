@@ -3424,7 +3424,7 @@ window.JST["feed"] = function (__obj) {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
         __out.push('\n    <article class=\'post ');
-        if (item.hasBeenRead()) {
+        if (item.get('has_been_read')) {
           __out.push(__sanitize('read'));
         }
         __out.push('\' data-id="');
@@ -3635,12 +3635,19 @@ window.JST["session_show"] = function (__obj) {
       return $.ajax({
         method: 'GET',
         url: this.url(),
-        success: function(data) {
-          var collection;
-          collection = new PostCollection();
-          collection.add(data.posts);
-          return callback(collection);
-        }
+        success: (function(_this) {
+          return function(data) {
+            var collection, model, _i, _len, _ref;
+            collection = new PostCollection();
+            collection.add(data.posts);
+            _ref = collection.models;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              model = _ref[_i];
+              model.feed = _this;
+            }
+            return callback(collection);
+          };
+        })(this)
       });
     };
 
@@ -3661,17 +3668,33 @@ window.JST["session_show"] = function (__obj) {
       return PostModel.__super__.constructor.apply(this, arguments);
     }
 
-    PostModel.prototype.url = null;
-
-    PostModel.prototype.has_been_read = false;
-
-    PostModel.prototype.hasBeenRead = function() {
-      return this.has_been_read;
+    PostModel.prototype.url = function() {
+      return application.url('feeds');
     };
 
-    PostModel.prototype.setAsRead = function() {
-      this.has_been_read = true;
-      return this.trigger('set_as_read', this);
+    PostModel.prototype.setAsRead = function(has_been_read) {
+      if (has_been_read == null) {
+        has_been_read = true;
+      }
+      if ((this.get('has_been_read')) !== has_been_read) {
+        this.set('has_been_read', has_been_read);
+        this.trigger('set_as_read', this);
+        return this.updateOnRemoteServer();
+      }
+    };
+
+    PostModel.prototype.updateOnRemoteServer = function() {
+      return $.ajax({
+        method: 'POST',
+        url: this.url(),
+        data: {
+          id: this.feed.get('id'),
+          post: {
+            id: this.get('id'),
+            has_been_read: this.get('has_been_read')
+          }
+        }
+      });
     };
 
     return PostModel;
@@ -3923,8 +3946,13 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedView.prototype.set_post_as_read = function(post) {
-      console.log('set_post_as_read', post);
-      return $(".post[data-id=" + (post.get('id')) + "]", this.$el).addClass('read');
+      var $post;
+      $post = $(".post[data-id=" + (post.get('id')) + "]", this.$el);
+      if ((post.get('has_been_read')) === true) {
+        return $post.addClass('read');
+      } else {
+        return $post.removeClass('read');
+      }
     };
 
     FeedView.prototype.clicked_on_post = function(e) {
@@ -3997,7 +4025,7 @@ window.JST["session_show"] = function (__obj) {
       var feed_id;
       e.preventDefault();
       feed_id = $(e.currentTarget).data('id');
-      return Backbone.history.navigate("feeds/" + feed_id, true);
+      return Backbone.history.loadUrl("feeds/" + feed_id);
     };
 
     return HomeView;

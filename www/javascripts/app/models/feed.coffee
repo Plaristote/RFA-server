@@ -12,8 +12,9 @@ class window.FeedModel extends Backbone.Model
     $.ajax {
       method: 'GET'
       url:    @url()
-      success: (data) ->
+      success: (data) =>
         collection = new PostCollection()
         collection.add data.posts
+        model.feed = @ for model in collection.models
         callback collection
     }

@@ -1,10 +1,21 @@
 class window.PostModel extends Backbone.Model
-  url: null
-  has_been_read: false
+  url: -> application.url 'feeds'
 
-  hasBeenRead: () ->
-    @has_been_read
+  setAsRead: (has_been_read = true) ->
+    if (@get 'has_been_read') != has_been_read
+      @set 'has_been_read', has_been_read
+      @trigger 'set_as_read', @
+      @updateOnRemoteServer()
 
-  setAsRead: () ->
-    @has_been_read = true
-    @trigger 'set_as_read', @
+  updateOnRemoteServer: () ->
+    $.ajax {
+      method: 'POST',
+      url: @url()
+      data: {
+        id:              @feed.get 'id'
+        post: {
+          id:            @get 'id'
+          has_been_read: @get 'has_been_read'
+        }
+      }
+    }

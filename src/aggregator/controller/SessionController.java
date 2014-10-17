@@ -43,7 +43,7 @@ public class SessionController extends Controller
 	}
 	catch (SQLException e)
 	{
-	  response.setStatus(500);
+	  response.setStatus(401);
 	  response.getWriter().write("Wrong username or password");
 	}
   }

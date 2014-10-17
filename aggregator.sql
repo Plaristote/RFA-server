@@ -30,3 +30,7 @@ CREATE TABLE feed_posts (id               int NOT NULL AUTO_INCREMENT,
 
 CREATE TABLE user_feeds (user_id int,
                          feed_id int);
+
+CREATE TABLE read_list (user_id int,
+                        feed_id int,
+                        post_id int);

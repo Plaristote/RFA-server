@@ -38,8 +38,11 @@ class window.FeedView extends Backbone.View
     $(e.currentTarget).parents('.post')
 
   set_post_as_read: (post) ->
-    console.log 'set_post_as_read', post
-    $(".post[data-id=#{post.get 'id'}]", @$el).addClass 'read'
+    $post = $(".post[data-id=#{post.get 'id'}]", @$el)
+    if (post.get 'has_been_read') == true
+      $post.addClass    'read'
+    else
+      $post.removeClass 'read'
 
   clicked_on_post: (e) ->
     unless $(e.target).is('button') or $(e.target).is('h2')

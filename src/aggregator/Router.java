@@ -44,10 +44,15 @@ public abstract class Router extends HttpServlet
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
+	String feed_id = request.getParameter("id");
+
 	loadController(request, response);
 	try
 	{
-      controller.create();
+	  if (feed_id == null)
+        controller.create();
+	  else
+		controller.update(feed_id);
 	}
 	catch (Exception e)
 	{

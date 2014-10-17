@@ -11,6 +11,7 @@ import aggregator.db.Model;
 import aggregator.db.SqlConnection;
 import aggregator.model.FeedModel;
 import aggregator.table.FeedTable;
+import aggregator.table.ReadListTable;
 import aggregator.table.UserFeedTable;
 import aggregator.view.FeedView;
 
@@ -55,6 +56,29 @@ public class FeedController extends Controller
 	response.addHeader("Content-Type", "application/json");
     response.getWriter().write(FeedView.show(feed));
   }
+  
+  @SuppressWarnings("serial")
+  @Override
+  public void update(String feed_id) throws Exception
+  {
+	require_authentified_user();
+	require_parameters(new ArrayList<String>() {{ add("post[id]"); add("post[has_been_read]"); }});
+
+	final String  post_id            = request.getParameter("post[id]");
+	String        post_has_been_read = request.getParameter("post[has_been_read]");
+	ReadListTable table              = new ReadListTable();
+
+	if (post_has_been_read != "false")
+	{
+	  table.create(Long.parseLong(user_id),  Long.parseLong(feed_id),  Long.parseLong(post_id));
+	  response.getWriter().write("Feed has been read");
+	}
+	else
+	{
+	  table.destroy(Long.parseLong(user_id), Long.parseLong(feed_id), Long.parseLong(post_id));
+	  response.getWriter().write("Feed is not read anymore");
+	}
+  }
 
   @Override
   public void destroy(String feed_id) throws Exception
@@ -88,7 +112,7 @@ public class FeedController extends Controller
     posts = feed.getPosts().order_by("created_at", "desc").limit(limit).skip(page * limit).entries();
 
 	response.addHeader("Content-Type", "application/json");
-    response.getWriter().write(FeedView.show(feed, posts));
+    response.getWriter().write(FeedView.show(feed, posts, user_id));
 
     FeedScheduler.scheduleUpdate(feed);
   }

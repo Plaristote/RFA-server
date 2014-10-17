@@ -104,7 +104,7 @@ public class Controller
 
 	if (session_attr == null)
 	{
-	  response.setStatus(403);
+	  response.setStatus(401);
 	  throw new Exception("Authentication required");
 	}
 	else
