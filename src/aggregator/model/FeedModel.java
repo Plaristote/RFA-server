@@ -1,6 +1,5 @@
 package aggregator.model;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -114,14 +113,12 @@ public class FeedModel extends Model
 	link        = rss_feed.link;
 	description = rss_feed.description;
 	favicon     = rss_feed.favicon;
-	int i = 0;
 	for (aggregator.rss.FeedItem item: rss_feed.items)
 	{
 	  FeedPostModel feed_post = getPostFromLink(item.link);
 
 	  if (feed_post == null)
 	  {
-		i++;
 		feed_post                = new FeedPostModel(table);
 		feed_post.feed_id        = getId();
 		feed_post.link           = item.link;
