@@ -3695,6 +3695,20 @@ window.JST["session_show"] = function (__obj) {
       return this.has('email');
     };
 
+    CurrentUser.prototype.check_connection = function() {
+      return $.ajax({
+        method: 'GET',
+        url: application.url('session'),
+        success: (function(_this) {
+          return function(data) {
+            _this.set('email', data.email);
+            _this.trigger('authenticate');
+            return _this.trigger('authenticate:connect');
+          };
+        })(this)
+      });
+    };
+
     CurrentUser.prototype.connect = function(options) {
       if (options == null) {
         options = {};
@@ -4170,11 +4184,12 @@ window.JST["session_show"] = function (__obj) {
           return _this.initialize();
         };
       })(this));
-      this.host = '/someproject';
     }
 
     _Class.prototype.initialize = function() {
+      this.host = $('body').data('context-path');
       this.current_user = new CurrentUser();
+      this.current_user.check_connection();
       this.initialize_collections();
       this.initialize_controllers();
       return Backbone.history.start();

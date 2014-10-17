@@ -2,6 +2,16 @@ class window.CurrentUser extends Backbone.Model
   is_connected: ->
     @has 'email'
 
+  check_connection: ->
+    $.ajax {
+      method: 'GET'
+      url:     application.url 'session'
+      success: (data) =>
+        @set 'email', data.email
+        @trigger 'authenticate'
+        @trigger 'authenticate:connect'
+    }
+
   connect: (options = {}) ->
     $.ajax {
       method:  'POST'

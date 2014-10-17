@@ -2,10 +2,14 @@ package aggregator.controller;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import aggregator.Controller;
-import aggregator.StringUtils;
-import aggregator.db.SqlConnection;
+import aggregator.db.Model;
+import aggregator.model.UserModel;
+import aggregator.table.UserTable;
+import aggregator.view.UserView;
 
 public class SessionController extends Controller
 {
@@ -13,14 +17,20 @@ public class SessionController extends Controller
   
   public void index() throws Exception
   {
-    create();
+	require_authentified_user();
+
+	UserTable   table = new UserTable();
+	UserModel   user  = (UserModel)table.find(user_id);
+
+	response.addHeader("Content-Type", "application/json");
+	response.getWriter().write(UserView.show(user));
   }
-  
+
   public void get(String id) throws Exception
   {
     response.getWriter().write("Session ID: " + request.getSession().getAttribute("user_id").toString());
   }
-  
+
   @Override
   public void create() throws Exception
   {
@@ -48,18 +58,21 @@ public class SessionController extends Controller
   private void password_authentication() throws Exception
   {
 	require_parameters(new ArrayList<String>() {{ add("email"); add("password"); }});
-	ResultSet results;
-	String    email    = StringUtils.ecmaScriptStringEscape(request.getParameter("email"));
-	String    password = StringUtils.ecmaScriptStringEscape(request.getParameter("password"));
-	String    query    = "SELECT id FROM users WHERE email='" + email + "' AND password='" + password + "'";
 
-	results = SqlConnection.getSingleton().statement.executeQuery(query);
-	while (results.next())
+	UserTable   table = new UserTable();
+	List<Model> users = table.where(new HashMap<String,String>() {{ 
+	  put("email",    getParameter("email", ""));
+	  put("password", getParameter("password", ""));
+	}}).entries();
+
+	if (users.size() > 0)
 	{
-	  request.getSession().setAttribute("user_id", results.getInt("id"));
-	  return ;
+	  UserModel user = (UserModel)users.get(0);
+	  
+	  request.getSession().setAttribute("user_id", user.getId());
 	}
-	throw new SQLException();
+	else
+	  throw new SQLException();
   }
 
   private void oauth_authentication()

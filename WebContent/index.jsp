@@ -5,6 +5,6 @@
     <script type="text/javascript" src="assets/application.js"></script>
     <link rel="stylesheet" href="assets/application.css" />
   </head>
-  <body>
+  <body data-context-path="${pageContext.request.contextPath}">
   </body>
 </html>
