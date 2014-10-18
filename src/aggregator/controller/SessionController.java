@@ -36,10 +36,7 @@ public class SessionController extends Controller
   {
 	try
 	{
-      if (use_password_auth)
-    	password_authentication();
-      else
-    	oauth_authentication();
+      password_authentication();
 	}
 	catch (SQLException e)
 	{
@@ -58,24 +55,27 @@ public class SessionController extends Controller
   private void password_authentication() throws Exception
   {
 	require_parameters(new ArrayList<String>() {{ add("email"); add("password"); }});
+	final String email    = getParameter("email", "");
+	final String password = getParameter("password", "");
 
-	UserTable   table = new UserTable();
-	List<Model> users = table.where(new HashMap<String,String>() {{ 
-	  put("email",    getParameter("email", ""));
-	  put("password", getParameter("password", ""));
-	}}).entries();
-
-	if (users.size() > 0)
+	if (email != "" && password != "")
 	{
-	  UserModel user = (UserModel)users.get(0);
+	  UserTable   table = new UserTable();
+	  List<Model> users = table.where(new HashMap<String,String>() {{ 
+	    put("email",    email);
+	    put("password", password);
+	  }}).entries();
+
+	  if (users.size() > 0)
+	  {
+	    UserModel user = (UserModel)users.get(0);
 	  
-	  request.getSession().setAttribute("user_id", user.getId());
+	    request.getSession().setAttribute("user_id", user.getId());
+	  }
+	  else
+	    throw new SQLException();
 	}
 	else
-	  throw new SQLException();
-  }
-
-  private void oauth_authentication()
-  {
+	  throw new Exception();
   }
 }

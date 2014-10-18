@@ -4,6 +4,7 @@
       "vendor/underscore.js",
       "vendor/backbone.js",
       "vendor/jquery.growl.js",
+      "oauth/**/*.coffee",
       "templates/**/*.js",
       "app/models/**/*.coffee",
       "app/collections/**/*.coffee",

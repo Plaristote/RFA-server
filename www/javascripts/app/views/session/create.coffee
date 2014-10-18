@@ -3,9 +3,10 @@ window.SessionViews ||= {}
 class window.SessionViews.Create extends Backbone.View
   className: 'session-view'
   template:  JST['session_create']
-  events: {
-    'submit form': 'onFormSubmit'
-  }
+  events:
+    'submit form':                  'onFormSubmit'
+    'click .google-authentication': 'onGoogleOauth'
+    'click .login-authentication':  'onLoginAuth'
 
   render: () ->
     @$el.html @template()
@@ -27,3 +28,10 @@ class window.SessionViews.Create extends Backbone.View
 
   onLoginFailed: () ->
     application.notification "Cannot authenticate as user '#{@username()}'", 'error'
+
+  onGoogleOauth: () ->
+    oauth.google.authenticate()
+
+  onLoginAuth: () ->
+    $('.oauth-modes', @$el).hide()
+    $('.create-user', @$el).show()

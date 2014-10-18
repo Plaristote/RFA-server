@@ -26,6 +26,14 @@
   .session-view {
     float: right;
 
+    .create-user {
+      display: none;
+    }
+
+    .auth-modes {
+      float: left;
+    }
+
     .label, .value, .controls {
       float: left;
      }

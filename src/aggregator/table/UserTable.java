@@ -19,4 +19,13 @@ public class UserTable extends Table {
 		return (new UserModel(this, row));
 	}
 
+	public UserModel create(String email) throws Exception {
+		UserModel user = new UserModel(this);
+		
+		user.email    = email;
+		user.password = "";
+		user.save();
+		return (user);
+	}
+
 }

@@ -3246,6 +3246,33 @@ Copyright 2013 Kevin Sylvestre
 
 }).call(this);
 
+(function() {
+  window.oauth || (window.oauth = {});
+
+  $(document).ready(function() {
+    return window.oauth.google = new ((function() {
+      function _Class() {}
+
+      _Class.prototype.url = 'https://accounts.google.com/o/oauth2/auth';
+
+      _Class.prototype.params = {
+        scope: 'email profile',
+        client_id: $('meta[name="google-client-id"]').attr('content'),
+        redirect_uri: $('meta[name="google-redirect-url"]').attr('content'),
+        response_type: 'code'
+      };
+
+      _Class.prototype.authenticate = function() {
+        return location.href = application.url_params(this.url, this.params);
+      };
+
+      return _Class;
+
+    })());
+  });
+
+}).call(this);
+
 if (!window.JST) {
   window.JST = {};
 }
@@ -3540,7 +3567,7 @@ window.JST["session_create"] = function (__obj) {
   }
   (function() {
     (function() {
-      __out.push('<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
+      __out.push('<div class="oauth-modes">\n  <span>Authenticate using:</span>\n  <button class="google-authentication">Google+</button>\n  <button class="login-authentication">Login/Password</button>\n</div>\n\n<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
     
     }).call(this);
     
@@ -4052,7 +4079,9 @@ window.JST["session_show"] = function (__obj) {
     Create.prototype.template = JST['session_create'];
 
     Create.prototype.events = {
-      'submit form': 'onFormSubmit'
+      'submit form': 'onFormSubmit',
+      'click .google-authentication': 'onGoogleOauth',
+      'click .login-authentication': 'onLoginAuth'
     };
 
     Create.prototype.render = function() {
@@ -4079,6 +4108,15 @@ window.JST["session_show"] = function (__obj) {
 
     Create.prototype.onLoginFailed = function() {
       return application.notification("Cannot authenticate as user '" + (this.username()) + "'", 'error');
+    };
+
+    Create.prototype.onGoogleOauth = function() {
+      return oauth.google.authenticate();
+    };
+
+    Create.prototype.onLoginAuth = function() {
+      $('.oauth-modes', this.$el).hide();
+      return $('.create-user', this.$el).show();
     };
 
     return Create;
@@ -4232,10 +4270,10 @@ window.JST["session_show"] = function (__obj) {
       return this.feeds_controller = new FeedsController();
     };
 
-    _Class.prototype.url = function(path, params) {
+    _Class.prototype.url_params = function(url, params) {
       var data, key, params_string, value;
-      params_string = '';
       if (params != null) {
+        params_string = '';
         data = [];
         for (key in params) {
           value = params[key];
@@ -4245,8 +4283,14 @@ window.JST["session_show"] = function (__obj) {
           });
         }
         params_string = '?' + $.param(data);
+        return "" + url + params_string;
+      } else {
+        return url;
       }
-      return "" + this.host + "/" + path + params_string;
+    };
+
+    _Class.prototype.url = function(path, params) {
+      return this.url_params("" + this.host + "/" + path);
     };
 
     _Class.prototype.notification = function(message, type) {

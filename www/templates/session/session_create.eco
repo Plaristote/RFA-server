@@ -1,3 +1,9 @@
+<div class="oauth-modes">
+  <span>Authenticate using:</span>
+  <button class="google-authentication">Google+</button>
+  <button class="login-authentication">Login/Password</button>
+</div>
+
 <form class="create-user">
   <div class="label">
     <label for="username">Username</label>
