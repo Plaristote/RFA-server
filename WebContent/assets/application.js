@@ -4290,7 +4290,7 @@ window.JST["session_show"] = function (__obj) {
     };
 
     _Class.prototype.url = function(path, params) {
-      return this.url_params("" + this.host + "/" + path);
+      return this.url_params("" + this.host + "/" + path, params);
     };
 
     _Class.prototype.notification = function(message, type) {

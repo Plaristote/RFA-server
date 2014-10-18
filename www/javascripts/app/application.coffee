@@ -28,7 +28,7 @@ window.application = new class
       url
 
   url: (path, params) ->
-    @url_params "#{@host}/#{path}"
+    @url_params "#{@host}/#{path}", params
 
   notification: (message, type) ->
     if type?
