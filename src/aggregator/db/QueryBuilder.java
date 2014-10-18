@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import aggregator.StringUtils;
 
@@ -17,7 +18,7 @@ public class QueryBuilder
   private String                  order_by;
   private String                  order_sort;
   private String                  join_with, join_foreign_key;
-  private HashMap<String, String> criterias   = new HashMap<String, String>();
+  private List<String>            criterias   = new ArrayList<String>();
   private List<String>            only_fields = new ArrayList<String>();
 
   public QueryBuilder(Table table)
@@ -27,7 +28,16 @@ public class QueryBuilder
 
   public QueryBuilder where(Map<String, String> criterias)
   {
-	this.criterias.putAll(criterias);
+	for (Map.Entry<String,String> entry: criterias.entrySet())
+	{
+	  this.criterias.add(entry.getKey() + "=\"" + StringUtils.ecmaScriptStringEscape(entry.getValue()) + '"');
+	}
+	return (this);
+  }
+  
+  public QueryBuilder where(String key, String operator, int value)
+  {
+	this.criterias.add(key + operator + Integer.toString(value));
 	return (this);
   }
 
@@ -154,17 +164,24 @@ public class QueryBuilder
       boolean prepend_and = false;
 		
 	  query += " WHERE ";
-	  for (Map.Entry<String,String> values: criterias.entrySet())
+	  for (String entry: criterias)
 	  {
-		String value = StringUtils.ecmaScriptStringEscape(values.getValue()); 
-		  
 		if (prepend_and)
 		  query += " AND ";
-		query   += values.getKey();
-		query   += "=\'" + value + '\'';
+		query   += entry;
 		prepend_and = true;
 	  }
 	}
     return (query);
   }
+}
+
+class Pair<A,B> {
+	public A first;
+	public B second;
+	
+	public Pair(A first, B second) {
+      this.first  = first;
+      this.second = second;
+	}
 }

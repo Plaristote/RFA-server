@@ -8,6 +8,7 @@ import aggregator.Controller;
 import aggregator.FeedScheduler;
 import aggregator.StringUtils;
 import aggregator.db.Model;
+import aggregator.db.QueryBuilder;
 import aggregator.db.SqlConnection;
 import aggregator.model.FeedModel;
 import aggregator.table.FeedTable;
@@ -95,6 +96,7 @@ public class FeedController extends Controller
 	  SqlConnection.getSingleton().statement.executeQuery("DELETE FROM feeds WHERE feed_id='" + feed_id + "'");
   }
 
+  @SuppressWarnings("serial")
   @Override
   public void get(String feed_id) throws Exception
   {
@@ -104,12 +106,18 @@ public class FeedController extends Controller
     FeedModel   feed       = (FeedModel)feed_table.find(feed_id);
     List<Model> posts;
     int         page, limit;
+	final int   highest_id;
+    QueryBuilder query;
 
-    page  = Integer.parseInt(getParameter("page",  "0"));
-    limit = Integer.parseInt(getParameter("limit", "50"));
+    highest_id = Integer.parseInt(getParameter("highest_id", "0"));
+    page       = Integer.parseInt(getParameter("page",  "0"));
+    limit      = Integer.parseInt(getParameter("limit", "50"));
     if (limit < 1 || limit > 250)
       limit = 50;
-    posts = feed.getPosts().order_by("created_at", "desc").limit(limit).skip(page * limit).entries();
+    query = feed.getPosts().order_by("created_at", "desc").limit(limit).skip(page * limit);
+    if (highest_id > 0)
+      query = query.where("id", "<=", highest_id);
+    posts = query.entries();
 
 	response.addHeader("Content-Type", "application/json");
     response.getWriter().write(FeedView.show(feed, posts, user_id));

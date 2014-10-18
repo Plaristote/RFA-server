@@ -5,13 +5,6 @@
 <div class='feed-description'><%= @feed.get 'description' %></div>
 
 <section class='feed-posts'>
-  <% for item in @posts.models: %>
-    <article class='post <%= 'read' if (item.get 'has_been_read') %>' data-id="<%= item.get 'id' %>">
-      <button class="minimize">minimize</button>
-      <a href='<%= item.get 'link' %>' target='blank'><h2><%= item.get 'title' %></h2></a>
-      <div class='description'>
-        <% __out.push(item.get 'description') %>
-      </div>
-    </article>
-  <% end %>
 </section>
+
+<div class="loader"></div>

@@ -3435,8 +3435,6 @@ window.JST["feed"] = function (__obj) {
   }
   (function() {
     (function() {
-      var item, _i, _len, _ref;
-    
       __out.push('<div class="controls">\n  <button class="minimize">minimize</button>\n</div>\n<h1>');
     
       __out.push(__sanitize(this.feed.get('title')));
@@ -3445,27 +3443,7 @@ window.JST["feed"] = function (__obj) {
     
       __out.push(__sanitize(this.feed.get('description')));
     
-      __out.push('</div>\n\n<section class=\'feed-posts\'>\n  ');
-    
-      _ref = this.posts.models;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        item = _ref[_i];
-        __out.push('\n    <article class=\'post ');
-        if (item.get('has_been_read')) {
-          __out.push(__sanitize('read'));
-        }
-        __out.push('\' data-id="');
-        __out.push(__sanitize(item.get('id')));
-        __out.push('">\n      <button class="minimize">minimize</button>\n      <a href=\'');
-        __out.push(__sanitize(item.get('link')));
-        __out.push('\' target=\'blank\'><h2>');
-        __out.push(__sanitize(item.get('title')));
-        __out.push('</h2></a>\n      <div class=\'description\'>\n        ');
-        __out.push(item.get('description'));
-        __out.push('\n      </div>\n    </article>\n  ');
-      }
-    
-      __out.push('\n</section>\n');
+      __out.push('</div>\n\n<section class=\'feed-posts\'>\n</section>\n\n<div class="loader"></div>\n');
     
     }).call(this);
     
@@ -3517,6 +3495,77 @@ window.JST["home"] = function (__obj) {
   (function() {
     (function() {
       __out.push('<div id="header">\n  <div class="icon"></div>\n  <h2 class="title">Fertiligene Aggregator</h2>\n\n  <div id="user">\n  </div>\n</div>\n\n<div id="fertiligene">\n  <nav id="menu">\n    <div id="feed-list">\n    </div>\n  </nav>\n\n  <section id="main-content">\n  </section>\n</div>\n\n<footer id="footer">\n  Fertiligene RSS Aggregator\n</footer>\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["posts"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      var item, _i, _len, _ref;
+    
+      _ref = this.posts.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        item = _ref[_i];
+        __out.push('\n  <article class=\'post ');
+        if (item.get('has_been_read')) {
+          __out.push(__sanitize('read'));
+        }
+        __out.push('\' data-id="');
+        __out.push(__sanitize(item.get('id')));
+        __out.push('">\n    <button class="minimize">minimize</button>\n    <a href=\'');
+        __out.push(__sanitize(item.get('link')));
+        __out.push('\' target=\'blank\'><h2>');
+        __out.push(__sanitize(item.get('title')));
+        __out.push('</h2></a>\n    <div class=\'description\'>\n      ');
+        __out.push(item.get('description'));
+        __out.push('\n    </div>\n  </article>\n');
+      }
+    
+      __out.push('\n\n');
     
     }).call(this);
     
@@ -3658,10 +3707,14 @@ window.JST["session_show"] = function (__obj) {
       }
     };
 
-    FeedModel.prototype.fetchPosts = function(callback) {
+    FeedModel.prototype.fetchPosts = function(callback, data) {
+      if (data == null) {
+        data = {};
+      }
       return $.ajax({
         method: 'GET',
         url: this.url(),
+        data: data,
         success: (function(_this) {
           return function(data) {
             var collection, model, _i, _len, _ref;
@@ -3675,6 +3728,14 @@ window.JST["session_show"] = function (__obj) {
             return callback(collection);
           };
         })(this)
+      });
+    };
+
+    FeedModel.prototype.fetchPage = function(callback, page, items_per_page, highest_id) {
+      return this.fetchPosts(callback, {
+        page: page,
+        limit: items_per_page,
+        highest_id: highest_id
       });
     };
 
@@ -3917,6 +3978,14 @@ window.JST["session_show"] = function (__obj) {
 
     FeedView.prototype.template = JST['feed'];
 
+    FeedView.prototype.posts_template = JST['posts'];
+
+    FeedView.prototype.page = 0;
+
+    FeedView.prototype.items_per_page = 50;
+
+    FeedView.prototype.infinite_scroll_enabled = false;
+
     FeedView.prototype.events = {
       "click .controls button.minimize": "minimize_posts",
       "click .post     button.minimize": "minimize_post",
@@ -3926,19 +3995,46 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedView.prototype.render = function() {
-      var post, _i, _len, _ref, _results;
       this.$el.html(this.template({
         feed: this.feed,
         posts: this.posts
       }));
+      this.append_posts(this.posts);
       $('#main-content').empty().append(this.$el);
-      _ref = this.posts.models;
-      _results = [];
+      return $(window).bind('scroll', (function(_this) {
+        return function() {
+          return _this.on_window_scrolled();
+        };
+      })(this));
+    };
+
+    FeedView.prototype.on_window_scrolled = function() {
+      var callback;
+      if (this.infinite_scroll_enabled === false) {
+        return;
+      }
+      if ($(window).scrollTop() === $(document).height() - window.innerHeight) {
+        this.infinite_scroll_enabled = false;
+        $('.loader', this.$el).show();
+        callback = this.append_posts.bind(this);
+        return this.feed.fetchPage(callback, this.page, this.items_per_page, this.posts.models[0].get('id'));
+      }
+    };
+
+    FeedView.prototype.append_posts = function(posts) {
+      var post, _i, _len, _ref;
+      $('.loader', this.$el).hide();
+      $('.feed-posts', this.$el).append(this.posts_template({
+        posts: posts
+      }));
+      _ref = posts.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         post = _ref[_i];
-        _results.push(post.on('set_as_read', this.set_post_as_read, this));
+        post.on('set_as_read', this.set_post_as_read, this);
       }
-      return _results;
+      this.page += 1;
+      this.infinite_scroll_enabled = true;
+      return this.delegateEvents();
     };
 
     FeedView.prototype.minimize_posts = function(e) {
