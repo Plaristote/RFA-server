@@ -2,7 +2,7 @@
 <ul>
   <li class="add-feed">
     <input type="text" class="add-feed-url" placeholder="Insert RSS feed url here..." />
-    <button>Add feed</button>
+    <button>Subscribe</button>
   </li>
   <% for feed in @collection.models: %>
     <li data-id="<%= feed.get 'id' %>" style="background-image: url(<%= feed.favicon() %>);">

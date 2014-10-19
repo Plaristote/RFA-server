@@ -3317,7 +3317,7 @@ window.JST["menu_feeds"] = function (__obj) {
     (function() {
       var feed, _i, _len, _ref;
     
-      __out.push('<h4>subscribtions</h4>\n<ul>\n  <li class="add-feed">\n    <input type="text" class="add-feed-url" placeholder="Insert RSS feed url here..." />\n    <button>Add feed</button>\n  </li>\n  ');
+      __out.push('<h4>subscribtions</h4>\n<ul>\n  <li class="add-feed">\n    <input type="text" class="add-feed-url" placeholder="Insert RSS feed url here..." />\n    <button>Subscribe</button>\n  </li>\n  ');
     
       _ref = this.collection.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
