@@ -31,8 +31,34 @@ public class SessionController extends Controller
     response.getWriter().write("Session ID: " + request.getSession().getAttribute("user_id").toString());
   }
 
+  @SuppressWarnings("serial")
   @Override
   public void create() throws Exception
+  {
+	require_parameters(new ArrayList<String>() {{ add("user[email]"); add("user[password]"); }});
+	if (request.getParameter("user[email]") != "" && request.getParameter("user[password]") != "")
+	{
+	  UserTable   users   = new UserTable();
+	  List<Model> results = users.where(new HashMap<String,String>() {{ put("email", request.getParameter("user[email]")); }}).entries();
+
+	  if (results.size() == 0)
+	  {
+	    UserModel user  = new UserModel(users);
+	
+	    user.email    = request.getParameter("user[email]");
+	    user.password = request.getParameter("user[password]");
+	    user.save();
+	    request.getSession().setAttribute("user_id", user.getId());
+	  }
+	  else
+	    response.setStatus(422);
+	}
+	else
+      response.setStatus(422);
+  }
+
+  @Override
+  public void update() throws Exception
   {
 	try
 	{

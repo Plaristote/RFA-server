@@ -5,6 +5,8 @@ window.application = new class
   initialize: () ->
     @host         = $('body').data 'context-path'
     @current_user = new CurrentUser()
+    @current_user.on 'authenticate:connect',    -> Backbone.history.navigate 'home',  true
+    @current_user.on 'authenticate:disconnect', -> Backbone.history.navigate 'login', true
     @current_user.check_connection()
     @initialize_collections()
     @initialize_controllers()
@@ -16,6 +18,9 @@ window.application = new class
   initialize_controllers: () ->
     @home_controller    = new HomeController()
     @feeds_controller   = new FeedsController()
+
+  disconnected: () ->
+    Backbone.history.navigate 'login', true
 
   url_params: (url, params) ->
     if params?

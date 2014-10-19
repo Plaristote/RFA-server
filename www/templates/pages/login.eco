@@ -1,0 +1,13 @@
+<h2>RSS Aggregator</h2>
+<p>
+  Google Reader inspired aggregator. No sharing feature. Use our Google account to authentify, or create an account using the following form.
+</p>
+
+<h2>I command you to subscribe</h2>
+<form class="subscribe">
+  <input type="text" name="user[email]"        placeholder="Your email address" />
+  <input type="password" name="user[password]" placeholder="Password" />
+  <input type="password" name="user[password_confirmation]" placeholder="Password confirmation" />
+  <button class="subscribe">Subscribe</button>
+</form>
+

@@ -10,7 +10,6 @@ class window.SessionViews.Create extends Backbone.View
 
   render: () ->
     @$el.html @template()
-    $('body').empty().append @$el
 
   username: () ->
     @$el.find('input[name="username"]').val()

@@ -1,6 +1,7 @@
 class window.HomeController extends Backbone.Router
   routes: {
-    "home": "show"
+    "home":  "show"
+    "login": "login"
   }
 
   constructor: () ->
@@ -9,4 +10,9 @@ class window.HomeController extends Backbone.Router
     @view.render()
 
   show: () ->
-    ;
+    view = new HomepageView()
+    view.render()
+
+  login: () ->
+    view = new LoginView()
+    view.render()

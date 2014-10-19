@@ -1,21 +1,25 @@
 class window.CurrentUser extends Backbone.Model
+  url: -> application.url 'session'
   is_connected: ->
     @has 'email'
 
   check_connection: ->
     $.ajax {
       method: 'GET'
-      url:     application.url 'session'
+      url:     @url()
       success: (data) =>
         @set 'email', data.email
         @trigger 'authenticate'
         @trigger 'authenticate:connect'
+      error: =>
+        @trigger 'authenticate'
+        @trigger 'authenticate:disconnect'
     }
 
   connect: (options = {}) ->
     $.ajax {
-      method:  'POST'
-      url:     application.url 'session'
+      method:  'PUT'
+      url:     @url()
       success: =>
         @set 'email', options.username
         @trigger 'authenticate'
@@ -29,7 +33,7 @@ class window.CurrentUser extends Backbone.Model
   disconnect: (options = {}) ->
     $.ajax {
       method:  'DELETE'
-      url:     application.url 'session'
+      url:     @url()
       success: =>
         @unset 'email'
         @trigger 'authenticate'
@@ -37,4 +41,20 @@ class window.CurrentUser extends Backbone.Model
         options.success() if options.success?
       error: ->
         options.failure() if options.failure?
+    }
+
+  create: (email, password) ->
+    $.ajax {
+      method: 'POST'
+      url:     @url()
+      data:
+        user:
+          email:    email
+          password: password
+      success: =>
+        @set 'email', email
+        @trigger 'authenticate'
+        @trigger  'authenticate:connect'
+      error: ->
+        application.notification "Email '#{email}' is already linked to an account"
     }

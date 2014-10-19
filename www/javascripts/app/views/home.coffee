@@ -21,15 +21,16 @@ class window.HomeView extends Backbone.View
     $('body').empty().append(@$el)
 
   refresh_feeds: () ->
-    console.log "refreshing feeds"
     @$feeds.html @template_feeds { collection: application.feeds }
 
   refresh_user: () ->
     console.log "refreshing user #{application.current_user.get 'email'} -> connected:#{application.current_user.is_connected()}"
-    view = if application.current_user.is_connected()
-      new SessionViews.Show()
+    if application.current_user.is_connected()
+      view = new SessionViews.Show()
+      @$feeds.css 'visibility', 'visible'
     else
-      new SessionViews.Create()
+      view = new SessionViews.Create()
+      @$feeds.css 'visibility', 'hidden'
     view.render()
     @$user.empty().append view.$el
 

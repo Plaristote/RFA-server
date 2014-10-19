@@ -3506,6 +3506,108 @@ window.JST["home"] = function (__obj) {
 if (!window.JST) {
   window.JST = {};
 }
+window.JST["homepage"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<h2>User homepage</h2>\n<p>\n  Use the menu on your left to subscribe to new feeds.\n</p>\n\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
+window.JST["login"] = function (__obj) {
+  if (!__obj) __obj = {};
+  var __out = [], __capture = function(callback) {
+    var out = __out, result;
+    __out = [];
+    callback.call(this);
+    result = __out.join('');
+    __out = out;
+    return __safe(result);
+  }, __sanitize = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else if (typeof value !== 'undefined' && value != null) {
+      return __escape(value);
+    } else {
+      return '';
+    }
+  }, __safe, __objSafe = __obj.safe, __escape = __obj.escape;
+  __safe = __obj.safe = function(value) {
+    if (value && value.ecoSafe) {
+      return value;
+    } else {
+      if (!(typeof value !== 'undefined' && value != null)) value = '';
+      var result = new String(value);
+      result.ecoSafe = true;
+      return result;
+    }
+  };
+  if (!__escape) {
+    __escape = __obj.escape = function(value) {
+      return ('' + value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    };
+  }
+  (function() {
+    (function() {
+      __out.push('<h2>RSS Aggregator</h2>\n<p>\n  Google Reader inspired aggregator. No sharing feature. Use our Google account to authentify, or create an account using the following form.\n</p>\n\n<h2>I command you to subscribe</h2>\n<form class="subscribe">\n  <input type="text" name="user[email]"        placeholder="Your email address" />\n  <input type="password" name="user[password]" placeholder="Password" />\n  <input type="password" name="user[password_confirmation]" placeholder="Password confirmation" />\n  <button class="subscribe">Subscribe</button>\n</form>\n\n');
+    
+    }).call(this);
+    
+  }).call(__obj);
+  __obj.safe = __objSafe, __obj.escape = __escape;
+  return __out.join('');
+};
+
+if (!window.JST) {
+  window.JST = {};
+}
 window.JST["posts"] = function (__obj) {
   if (!__obj) __obj = {};
   var __out = [], __capture = function(callback) {
@@ -3813,6 +3915,10 @@ window.JST["session_show"] = function (__obj) {
       return CurrentUser.__super__.constructor.apply(this, arguments);
     }
 
+    CurrentUser.prototype.url = function() {
+      return application.url('session');
+    };
+
     CurrentUser.prototype.is_connected = function() {
       return this.has('email');
     };
@@ -3820,12 +3926,18 @@ window.JST["session_show"] = function (__obj) {
     CurrentUser.prototype.check_connection = function() {
       return $.ajax({
         method: 'GET',
-        url: application.url('session'),
+        url: this.url(),
         success: (function(_this) {
           return function(data) {
             _this.set('email', data.email);
             _this.trigger('authenticate');
             return _this.trigger('authenticate:connect');
+          };
+        })(this),
+        error: (function(_this) {
+          return function() {
+            _this.trigger('authenticate');
+            return _this.trigger('authenticate:disconnect');
           };
         })(this)
       });
@@ -3836,8 +3948,8 @@ window.JST["session_show"] = function (__obj) {
         options = {};
       }
       return $.ajax({
-        method: 'POST',
-        url: application.url('session'),
+        method: 'PUT',
+        url: this.url(),
         success: (function(_this) {
           return function() {
             _this.set('email', options.username);
@@ -3866,7 +3978,7 @@ window.JST["session_show"] = function (__obj) {
       }
       return $.ajax({
         method: 'DELETE',
-        url: application.url('session'),
+        url: this.url(),
         success: (function(_this) {
           return function() {
             _this.unset('email');
@@ -3881,6 +3993,29 @@ window.JST["session_show"] = function (__obj) {
           if (options.failure != null) {
             return options.failure();
           }
+        }
+      });
+    };
+
+    CurrentUser.prototype.create = function(email, password) {
+      return $.ajax({
+        method: 'POST',
+        url: this.url(),
+        data: {
+          user: {
+            email: email,
+            password: password
+          }
+        },
+        success: (function(_this) {
+          return function() {
+            _this.set('email', email);
+            _this.trigger('authenticate');
+            return _this.trigger('authenticate:connect');
+          };
+        })(this),
+        error: function() {
+          return application.notification("Email '" + email + "' is already linked to an account");
         }
       });
     };
@@ -4159,7 +4294,6 @@ window.JST["session_show"] = function (__obj) {
     };
 
     HomeView.prototype.refresh_feeds = function() {
-      console.log("refreshing feeds");
       return this.$feeds.html(this.template_feeds({
         collection: application.feeds
       }));
@@ -4168,7 +4302,13 @@ window.JST["session_show"] = function (__obj) {
     HomeView.prototype.refresh_user = function() {
       var view;
       console.log("refreshing user " + (application.current_user.get('email')) + " -> connected:" + (application.current_user.is_connected()));
-      view = application.current_user.is_connected() ? new SessionViews.Show() : new SessionViews.Create();
+      if (application.current_user.is_connected()) {
+        view = new SessionViews.Show();
+        this.$feeds.css('visibility', 'visible');
+      } else {
+        view = new SessionViews.Create();
+        this.$feeds.css('visibility', 'hidden');
+      }
       view.render();
       return this.$user.empty().append(view.$el);
     };
@@ -4186,6 +4326,75 @@ window.JST["session_show"] = function (__obj) {
     };
 
     return HomeView;
+
+  })(Backbone.View);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.HomepageView = (function(_super) {
+    __extends(HomepageView, _super);
+
+    function HomepageView() {
+      return HomepageView.__super__.constructor.apply(this, arguments);
+    }
+
+    HomepageView.prototype.className = 'home-page';
+
+    HomepageView.prototype.template = JST['homepage'];
+
+    HomepageView.prototype.render = function() {
+      this.$el.html(this.template());
+      return $('#main-content').empty().append(this.$el);
+    };
+
+    return HomepageView;
+
+  })(Backbone.View);
+
+}).call(this);
+
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  window.LoginView = (function(_super) {
+    __extends(LoginView, _super);
+
+    function LoginView() {
+      return LoginView.__super__.constructor.apply(this, arguments);
+    }
+
+    LoginView.prototype.className = 'login-view';
+
+    LoginView.prototype.template = JST['login'];
+
+    LoginView.prototype.events = {
+      "click button.subscribe": "subscribe"
+    };
+
+    LoginView.prototype.render = function() {
+      this.$el.html(this.template());
+      return $('#main-content').empty().append(this.$el);
+    };
+
+    LoginView.prototype.subscribe = function(e) {
+      var confirmation, password, username;
+      e.preventDefault();
+      username = $('[name="user[email]"]', this.$el).val();
+      password = $('[name="user[password]"]', this.$el).val();
+      confirmation = $('[name="user[password_confirmation]"]', this.$el).val();
+      if (password !== confirmation) {
+        return application.notification('password and confirmation don\'t match');
+      } else {
+        return application.current_user.create(username, password);
+      }
+    };
+
+    return LoginView;
 
   })(Backbone.View);
 
@@ -4215,8 +4424,7 @@ window.JST["session_show"] = function (__obj) {
     };
 
     Create.prototype.render = function() {
-      this.$el.html(this.template());
-      return $('body').empty().append(this.$el);
+      return this.$el.html(this.template());
     };
 
     Create.prototype.username = function() {
@@ -4350,7 +4558,8 @@ window.JST["session_show"] = function (__obj) {
     __extends(HomeController, _super);
 
     HomeController.prototype.routes = {
-      "home": "show"
+      "home": "show",
+      "login": "login"
     };
 
     function HomeController() {
@@ -4359,7 +4568,17 @@ window.JST["session_show"] = function (__obj) {
       this.view.render();
     }
 
-    HomeController.prototype.show = function() {};
+    HomeController.prototype.show = function() {
+      var view;
+      view = new HomepageView();
+      return view.render();
+    };
+
+    HomeController.prototype.login = function() {
+      var view;
+      view = new LoginView();
+      return view.render();
+    };
 
     return HomeController;
 
@@ -4385,6 +4604,12 @@ window.JST["session_show"] = function (__obj) {
     _Class.prototype.initialize = function() {
       this.host = $('body').data('context-path');
       this.current_user = new CurrentUser();
+      this.current_user.on('authenticate:connect', function() {
+        return Backbone.history.navigate('home', true);
+      });
+      this.current_user.on('authenticate:disconnect', function() {
+        return Backbone.history.navigate('login', true);
+      });
       this.current_user.check_connection();
       this.initialize_collections();
       this.initialize_controllers();
@@ -4398,6 +4623,10 @@ window.JST["session_show"] = function (__obj) {
     _Class.prototype.initialize_controllers = function() {
       this.home_controller = new HomeController();
       return this.feeds_controller = new FeedsController();
+    };
+
+    _Class.prototype.disconnected = function() {
+      return Backbone.history.navigate('login', true);
     };
 
     _Class.prototype.url_params = function(url, params) {
