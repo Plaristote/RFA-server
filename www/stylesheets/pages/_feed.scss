@@ -24,10 +24,19 @@
         margin-top: 20px;
         $padding: 10px;
 
-        > .minimize {
-          margin: $padding;
-          float: right;
-          font-size: 75%;
+        > .controls {
+          margin:    $padding;
+          float:     right;
+          min-width: 231px; 
+
+          button {
+            font-size: 75%;
+            float:     right;
+          }
+
+          .mark-as-unread {
+            display: none;
+          }
         }
 
         > a h2 {
@@ -46,6 +55,16 @@
       > .read {
         > a h2 {
           color: lightgray;
+        }
+
+        > .controls {
+          .mark-as-read {
+            display: none;
+          }
+
+          .mark-as-unread {
+            display: block;
+          }
         }
       }
     }

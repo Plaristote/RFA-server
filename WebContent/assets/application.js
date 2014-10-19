@@ -3435,7 +3435,7 @@ window.JST["feed"] = function (__obj) {
   }
   (function() {
     (function() {
-      __out.push('<div class="controls">\n  <button class="minimize">minimize</button>\n</div>\n<h1>');
+      __out.push('<div class="controls">\n  <button class="minimize-all">minimize</button>\n  <button class="delete">unsubscribe</button>\n</div>\n<h1>');
     
       __out.push(__sanitize(this.feed.get('title')));
     
@@ -3556,7 +3556,7 @@ window.JST["posts"] = function (__obj) {
         }
         __out.push('\' data-id="');
         __out.push(__sanitize(item.get('id')));
-        __out.push('">\n    <button class="minimize">minimize</button>\n    <a href=\'');
+        __out.push('">\n    <div class="controls">\n      <button class="minimize">minimize</button>\n      <button class="mark-as-unread">mark as unread</button>\n      <button class="mark-as-read">mark as read</button>\n    </div>\n    <a href=\'');
         __out.push(__sanitize(item.get('link')));
         __out.push('\' target=\'blank\'><h2>');
         __out.push(__sanitize(item.get('title')));
@@ -3692,9 +3692,7 @@ window.JST["session_show"] = function (__obj) {
     }
 
     FeedModel.prototype.url = function() {
-      return application.url('feeds', {
-        id: this.get('id')
-      });
+      return application.url("feeds/" + (this.get('id')));
     };
 
     FeedModel.prototype.favicon = function() {
@@ -3739,6 +3737,20 @@ window.JST["session_show"] = function (__obj) {
       });
     };
 
+    FeedModel.prototype["delete"] = function() {
+      alert('delete');
+      return $.ajax({
+        method: 'DELETE',
+        url: this.url(),
+        success: (function(_this) {
+          return function() {
+            alert('success');
+            return _this.destroy();
+          };
+        })(this)
+      });
+    };
+
     return FeedModel;
 
   })(Backbone.Model);
@@ -3757,7 +3769,7 @@ window.JST["session_show"] = function (__obj) {
     }
 
     PostModel.prototype.url = function() {
-      return application.url('feeds');
+      return application.url("feeds/" + (this.feed.get('id')));
     };
 
     PostModel.prototype.setAsRead = function(has_been_read) {
@@ -3776,7 +3788,6 @@ window.JST["session_show"] = function (__obj) {
         method: 'POST',
         url: this.url(),
         data: {
-          id: this.feed.get('id'),
           post: {
             id: this.get('id'),
             has_been_read: this.get('has_been_read')
@@ -3920,7 +3931,6 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedCollection.prototype.create_from_url = function(url) {
-      alert("create from url: " + url);
       return $.ajax({
         method: 'POST',
         url: this.url({
@@ -3987,10 +3997,13 @@ window.JST["session_show"] = function (__obj) {
     FeedView.prototype.infinite_scroll_enabled = false;
 
     FeedView.prototype.events = {
-      "click .controls button.minimize": "minimize_posts",
-      "click .post     button.minimize": "minimize_post",
-      "click .post     > a": "open_post",
-      "dblclick .post  > a": "double_clicked_post",
+      "click         .controls button.delete": "delete_feed",
+      "click         .controls button.minimize-all": "minimize_posts",
+      "click .post > .controls button.minimize": "minimize_post",
+      "click .mark-as-read": "on_mark_as_read",
+      "click .mark-as-unread": "on_mark_as_read",
+      "click .post > a": "open_post",
+      "dblclick .post > a": "double_clicked_post",
       "click .post": "clicked_on_post"
     };
 
@@ -4008,6 +4021,20 @@ window.JST["session_show"] = function (__obj) {
       })(this));
     };
 
+    FeedView.prototype.delete_feed = function() {
+      this.feed["delete"]();
+      return Backbone.history.navigate('home', true);
+    };
+
+    FeedView.prototype.on_mark_as_read = function(e) {
+      var $post, post, read;
+      $post = this.get_post_from_event(e);
+      post = this.posts.get($post.data('id'));
+      read = $(e.currentTarget).hasClass('mark-as-read');
+      console.log("set post " + (post.get('id')) + " as read:", read);
+      return post.setAsRead(read);
+    };
+
     FeedView.prototype.on_window_scrolled = function() {
       var callback;
       if (this.infinite_scroll_enabled === false) {
@@ -4022,7 +4049,7 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedView.prototype.append_posts = function(posts) {
-      var post, _i, _len, _ref;
+      var model, post, _i, _j, _len, _len1, _ref, _ref1;
       $('.loader', this.$el).hide();
       $('.feed-posts', this.$el).append(this.posts_template({
         posts: posts
@@ -4034,6 +4061,14 @@ window.JST["session_show"] = function (__obj) {
       }
       this.page += 1;
       this.infinite_scroll_enabled = true;
+      if (posts.models !== this.posts.models) {
+        _ref1 = posts.models;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          model = _ref1[_j];
+          this.posts.add(model);
+        }
+        window.posts = this.posts;
+      }
       return this.delegateEvents();
     };
 
@@ -4064,7 +4099,6 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedView.prototype.get_post_from_event = function(e) {
-      console.log($(e.currentTarget).parents('.post'));
       return $(e.currentTarget).parents('.post');
     };
 

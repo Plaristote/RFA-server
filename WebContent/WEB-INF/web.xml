@@ -20,6 +20,7 @@
   <servlet-mapping>
     <servlet-name>Feeds</servlet-name>
     <url-pattern>/feeds</url-pattern>
+    <url-pattern>/feeds/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Session</servlet-name>

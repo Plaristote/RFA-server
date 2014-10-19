@@ -6,17 +6,31 @@ class window.FeedView extends Backbone.View
   items_per_page:          50
   infinite_scroll_enabled: false
   events:
-    "click .controls button.minimize": "minimize_posts" 
-    "click .post     button.minimize": "minimize_post"
-    "click .post     > a":             "open_post"
-    "dblclick .post  > a":             "double_clicked_post"
-    "click .post":                     "clicked_on_post"
+    "click         .controls button.delete":         "delete_feed"
+    "click         .controls button.minimize-all":   "minimize_posts" 
+    "click .post > .controls button.minimize":       "minimize_post"
+    "click .mark-as-read":   "on_mark_as_read"
+    "click .mark-as-unread": "on_mark_as_read"
+    "click .post > a":                               "open_post"
+    "dblclick .post > a":                            "double_clicked_post"
+    "click .post":                                   "clicked_on_post"
 
   render: () ->
     @$el.html @template { feed: @feed, posts: @posts }
     @append_posts @posts
     $('#main-content').empty().append @$el
     $(window).bind 'scroll', => @on_window_scrolled()
+
+  delete_feed: () ->
+    @feed.delete()
+    Backbone.history.navigate 'home', true
+
+  on_mark_as_read: (e) ->
+    $post = @get_post_from_event e
+    post  = @posts.get($post.data 'id')
+    read  = $(e.currentTarget).hasClass 'mark-as-read'
+    console.log "set post #{post.get 'id'} as read:", read
+    post.setAsRead read
 
   on_window_scrolled: ->
     return if @infinite_scroll_enabled == false
@@ -33,6 +47,9 @@ class window.FeedView extends Backbone.View
       post.on 'set_as_read', @set_post_as_read, @
     @page += 1
     @infinite_scroll_enabled = true
+    if posts.models != @posts.models
+      @posts.add model for model in posts.models
+      window.posts = @posts
     @delegateEvents()
 
   minimize_posts: (e) ->
@@ -54,7 +71,6 @@ class window.FeedView extends Backbone.View
     $post.find('.description').hide()
 
   get_post_from_event: (e) ->
-    console.log $(e.currentTarget).parents('.post')
     $(e.currentTarget).parents('.post')
 
   set_post_as_read: (post) ->

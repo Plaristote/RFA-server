@@ -18,7 +18,6 @@ class window.FeedCollection extends Backbone.Collection
     }
 
   create_from_url: (url) ->
-    alert "create from url: #{url}"
     $.ajax {
       method: 'POST'
       url:    @url { "feed[url]": url }

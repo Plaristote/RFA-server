@@ -3,11 +3,14 @@ package aggregator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.file.Matcher;
 
 public abstract class Router extends HttpServlet
 {
@@ -25,7 +28,7 @@ public abstract class Router extends HttpServlet
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
-	String feed_id = request.getParameter("id");
+	String feed_id = getIdFromUri(request.getRequestURI());
 
 	loadController(request, response);
 	try
@@ -44,7 +47,7 @@ public abstract class Router extends HttpServlet
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
-	String feed_id = request.getParameter("id");
+	String feed_id = getIdFromUri(request.getRequestURI());
 
 	loadController(request, response);
 	try
@@ -63,12 +66,12 @@ public abstract class Router extends HttpServlet
   @Override
   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
-    String feed_id = request.getParameter("id");
+	String feed_id = getIdFromUri(request.getRequestURI());
 
 	loadController(request, response);
 	try
 	{
-      if (feed_id == null)
+      if (feed_id != null)
         controller.update(feed_id);
       else
         controller.update();
@@ -83,12 +86,12 @@ public abstract class Router extends HttpServlet
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
-    String feed_id = request.getParameter("id");
+	String feed_id = getIdFromUri(request.getRequestURI());
 
 	loadController(request, response);
 	try
 	{
-      if (feed_id == null)
+      if (feed_id != null)
         controller.destroy(feed_id);
       else
         controller.destroy();
@@ -108,5 +111,15 @@ public abstract class Router extends HttpServlet
     if (controller.response.getStatus() == 200)
       controller.response.setStatus(500);
     controller.response.getWriter().write("Exception Received: " + exception.toString() + "\n" + sw.getBuffer().toString());
-  }  
+  }
+
+  private String getIdFromUri(String uri)
+  {
+	java.util.regex.Pattern pattern = Pattern.compile("/([0-9]+)$");
+	java.util.regex.Matcher matcher = pattern.matcher(uri);
+	
+	if (matcher.find())
+	  return (uri.substring(matcher.start(1), matcher.end(1)));
+	return (null);
+  }
 }

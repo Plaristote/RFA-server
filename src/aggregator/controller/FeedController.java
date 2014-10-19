@@ -21,6 +21,7 @@ public class FeedController extends Controller
   @Override
   public void index() throws Exception
   {
+	  System.out.println("index");
 	require_authentified_user();
 
 	FeedTable              feed_table = new FeedTable();
@@ -37,6 +38,7 @@ public class FeedController extends Controller
   @Override
   public void create() throws Exception
   {
+	  System.out.println("create");
 	require_authentified_user();
 	require_parameters(new ArrayList<String>() {{ add("feed[url]"); }});
 
@@ -62,6 +64,7 @@ public class FeedController extends Controller
   @Override
   public void update(String feed_id) throws Exception
   {
+	  System.out.println("update");
 	require_authentified_user();
 	require_parameters(new ArrayList<String>() {{ add("post[id]"); add("post[has_been_read]"); }});
 
@@ -81,25 +84,42 @@ public class FeedController extends Controller
 	}
   }
 
+  @SuppressWarnings("serial")
   @Override
   public void destroy(String feed_id) throws Exception
   {
-	ResultSet users_remaining;
-	  
 	require_authentified_user();
-	feed_id = StringUtils.ecmaScriptStringEscape(feed_id);
-	SqlConnection.getSingleton().statement.execute("DELETE FROM user_feeds WHERE user_id='" + user_id + "' feed_id='" + feed_id + "'");
 
-	users_remaining = SqlConnection.getSingleton().statement.executeQuery("SELECT COUNT(user_id) AS feed_count WHERE feed_id='" + feed_id + "'");
+	final String           _feed_id   = feed_id;
+	final String           _user_id   = user_id;
+	ReadListTable          read_list  = new ReadListTable();
+	UserFeedTable          user_feeds = new UserFeedTable();
+	HashMap<String,String> criterias  = new HashMap<String,String>() {{
+	  put("feed_id", _feed_id);
+	  put("user_id", _user_id);
+	}};
+	ResultSet              users_remaining;
+
+	feed_id = StringUtils.ecmaScriptStringEscape(feed_id);
+	user_feeds.where(criterias).destroy();
+	users_remaining = SqlConnection.getSingleton().statement.executeQuery("SELECT COUNT(user_id) AS feed_count FROM user_feeds WHERE feed_id='" + feed_id + "'");
 	users_remaining.next();
 	if (users_remaining.getInt("feed_count") == 0)
-	  SqlConnection.getSingleton().statement.executeQuery("DELETE FROM feeds WHERE feed_id='" + feed_id + "'");
+	{
+	  FeedTable feed_table = new FeedTable();
+	  FeedModel feed       = (FeedModel)feed_table.find(feed_id);
+
+	  feed.destroy();
+	}
+	else
+	  read_list.where(criterias).destroy();
   }
 
   @SuppressWarnings("serial")
   @Override
   public void get(String feed_id) throws Exception
   {
+	  System.out.println("get");
     require_authentified_user();
 
     FeedTable   feed_table = new FeedTable();

@@ -1,5 +1,6 @@
 <div class="controls">
-  <button class="minimize">minimize</button>
+  <button class="minimize-all">minimize</button>
+  <button class="delete">unsubscribe</button>
 </div>
 <h1><%= @feed.get 'title' %></h1>
 <div class='feed-description'><%= @feed.get 'description' %></div>

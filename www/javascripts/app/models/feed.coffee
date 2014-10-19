@@ -1,5 +1,5 @@
 class window.FeedModel extends Backbone.Model
-  url: -> application.url 'feeds', { id: @get 'id' }
+  url: -> application.url "feeds/#{@get 'id'}"
 
   favicon: ->
     url = @get 'favicon'
@@ -22,3 +22,13 @@ class window.FeedModel extends Backbone.Model
 
   fetchPage: (callback, page, items_per_page, highest_id) ->
     @fetchPosts callback, page: page, limit: items_per_page, highest_id: highest_id
+
+  delete: () ->
+    alert 'delete'
+    $.ajax {
+      method: 'DELETE'
+      url:    @url()
+      success: =>
+        alert 'success'
+        @destroy()
+    }
