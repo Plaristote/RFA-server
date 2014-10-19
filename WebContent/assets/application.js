@@ -3840,13 +3840,11 @@ window.JST["session_show"] = function (__obj) {
     };
 
     FeedModel.prototype["delete"] = function() {
-      alert('delete');
       return $.ajax({
         method: 'DELETE',
         url: this.url(),
         success: (function(_this) {
           return function() {
-            alert('success');
             return _this.destroy();
           };
         })(this)

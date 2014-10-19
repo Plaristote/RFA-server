@@ -24,11 +24,8 @@ class window.FeedModel extends Backbone.Model
     @fetchPosts callback, page: page, limit: items_per_page, highest_id: highest_id
 
   delete: () ->
-    alert 'delete'
     $.ajax {
       method: 'DELETE'
       url:    @url()
-      success: =>
-        alert 'success'
-        @destroy()
+      success: => @destroy()
     }
