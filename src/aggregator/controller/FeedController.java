@@ -21,7 +21,6 @@ public class FeedController extends Controller
   @Override
   public void index() throws Exception
   {
-	  System.out.println("index");
 	require_authentified_user();
 
 	FeedTable              feed_table = new FeedTable();
@@ -38,7 +37,6 @@ public class FeedController extends Controller
   @Override
   public void create() throws Exception
   {
-	  System.out.println("create");
 	require_authentified_user();
 	require_parameters(new ArrayList<String>() {{ add("feed[url]"); }});
 
@@ -64,7 +62,6 @@ public class FeedController extends Controller
   @Override
   public void update(String feed_id) throws Exception
   {
-	  System.out.println("update");
 	require_authentified_user();
 	require_parameters(new ArrayList<String>() {{ add("post[id]"); add("post[has_been_read]"); }});
 
@@ -119,7 +116,6 @@ public class FeedController extends Controller
   @Override
   public void get(String feed_id) throws Exception
   {
-	  System.out.println("get");
     require_authentified_user();
 
     FeedTable   feed_table = new FeedTable();
