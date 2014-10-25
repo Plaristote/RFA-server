@@ -77,25 +77,20 @@ class SaxRssHandler  extends org.xml.sax.helpers.DefaultHandler {
 	
 	public void startElementAtRoot(String uri, String localName, String qName, Attributes attributes)
 	{
-	  switch (qName)
+          if (qName == "channel)
 	  {
-	  case "channel":
 		  state = STATE_CHANNEL;
-		  break ;
 	  }
 	}
 	
 	public void startElementAtChannel(String uri, String localName, String qName, Attributes attributes)
 	{
-	  switch (qName)
-	  {
-	  case "image":
+          if (qName == "image")
 		  state = STATE_IMAGE;
-		  break ;
-	  case "item":
+          else if (qName == "item")
+          {
 		  state = STATE_ITEM;
 		  current_item = new FeedItem();
-		  break ;
 	  }
 	}
 
@@ -120,65 +115,43 @@ class SaxRssHandler  extends org.xml.sax.helpers.DefaultHandler {
 	
 	public void endElementAtChannel(String uri, String localName, String qName)
 	{
-	  switch (qName)
-	  {
-	  case "channel":
+          if (qName == "channel")
 		  state = STATE_ROOT;
-		  break ;
-	  case "title":
+          else if (qName == "title")
 		  feed.title = content;
-		  break ;
-	  case "description":
+          else if (qName == "description")
 		  feed.description = content;
-		  break ;
-	  case "link":
+          else if (qName == "link")
 		  feed.link = content;
-		  break ;
-	  }
-	  if (qName == "channel")
-		state = STATE_ROOT;
-	  
 	}
 	
 	public void endElementAtImage(String uri, String localName, String qName)
 	{
-	  switch (qName)
-	  {
-	  case "image":
+          if (qName == "image")
 		  state = STATE_CHANNEL;
-		  break ;
-	  case "url":
+	  else if (qName == "url")
 		  feed.favicon = content;
-		  break ;
-	  }
 	}
 
 	public void endElementAtItem(String uri, String localName, String qName)
 	{
-	  switch (qName)
-	  {
-	  case "item":
+	  if (qName == "item")
+          {
 		  feed.items.add(current_item);
 		  state = STATE_CHANNEL;
-		  break ;
-	  case "title":
+	  }
+	  else if (qName == "title")
 		  current_item.title = content;
-		  break ;
-	  case "description":
+	  else if (qName == "description")
 		  current_item.description = content;
-		  break ;
-	  case "link":
+	  else if (qName == "link")
 		  current_item.link = content;
-		  break ;
-	  case "category":
+	  else if (qName == "category")
 		  current_item.category = content;
-		  break ;
-	  case "comments":
+	  else if (qName == "comments")
 		  current_item.comments = content;
-		  break ;
-	  case "pubDate":
+	  else if (qName == "pubDate")
 		  current_item.pubDate = content;
-		  break ;
 	  }
 	}
 
