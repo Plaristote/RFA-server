@@ -67,8 +67,12 @@ public class Google extends HttpServlet {
 
     private void redirectToHome()
     {
+      String home_url = "/";
+
+      if (request.getContextPath() != "")
+    	home_url = request.getContextPath();
       response.setStatus(302);
-      response.setHeader("location", request.getContextPath());
+      response.setHeader("Location", home_url);
     }
 }
 
