@@ -77,7 +77,7 @@ class SaxRssHandler  extends org.xml.sax.helpers.DefaultHandler {
 	
 	public void startElementAtRoot(String uri, String localName, String qName, Attributes attributes)
 	{
-          if (qName == "channel)
+          if (qName == "channel")
 	  {
 		  state = STATE_CHANNEL;
 	  }
@@ -152,7 +152,6 @@ class SaxRssHandler  extends org.xml.sax.helpers.DefaultHandler {
 		  current_item.comments = content;
 	  else if (qName == "pubDate")
 		  current_item.pubDate = content;
-	  }
 	}
 
 }

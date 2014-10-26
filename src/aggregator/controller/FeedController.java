@@ -112,7 +112,6 @@ public class FeedController extends Controller
 	  read_list.where(criterias).destroy();
   }
 
-  @SuppressWarnings("serial")
   @Override
   public void get(String feed_id) throws Exception
   {

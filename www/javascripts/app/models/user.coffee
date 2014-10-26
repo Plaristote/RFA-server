@@ -18,8 +18,8 @@ class window.CurrentUser extends Backbone.Model
 
   connect: (options = {}) ->
     $.ajax {
-      method:  'PUT'
-      url:     @url()
+      method:  'POST'
+      url:     "#{@url()}/new"
       success: =>
         @set 'email', options.username
         @trigger 'authenticate'

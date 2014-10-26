@@ -3946,8 +3946,8 @@ window.JST["posts"] = function (__obj) {
         options = {};
       }
       return $.ajax({
-        method: 'PUT',
-        url: this.url(),
+        method: 'POST',
+        url: "" + (this.url()) + "/new",
         success: (function(_this) {
           return function() {
             _this.set('email', options.username);
