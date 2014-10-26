@@ -26,7 +26,7 @@ public class Google extends HttpServlet {
 	public final static String client_id          = "774589530542-4apb37j5ntt0hm06do5cudc9jksbg6gs.apps.googleusercontent.com";
 	public final static String email_address      = "774589530542-4apb37j5ntt0hm06do5cudc9jksbg6gs@developer.gserviceaccount.com";
 	public final static String client_secret      = "mxFD4u0XKoa8QPurtFqMEd7H";
-    public final static String redirect_uri       = "http://tomcat8-wokesmeed.rhcloud.com/aggregoire/oauth/2/google";
+    public final static String redirect_uri       = "http://tomcat8-wokesmeed.rhcloud.com/oauth/2/google";
     public final static String javascript_oirings = "http://tomcat8-wokesmeed.rhcloud.com";
     
     private HttpServletResponse response;
