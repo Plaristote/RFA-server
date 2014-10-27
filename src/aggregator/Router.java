@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import aggregator.db.SqlConnection;
+
 public abstract class Router extends HttpServlet
 {
   private static final long serialVersionUID = 1L;
@@ -39,6 +41,7 @@ public abstract class Router extends HttpServlet
 	{
       handleException(e);
 	}
+	cleanUp();
   }
 
   @Override
@@ -57,6 +60,7 @@ public abstract class Router extends HttpServlet
 	{
       handleException(e);
 	}
+	cleanUp();
   }
     
   @Override
@@ -75,7 +79,7 @@ public abstract class Router extends HttpServlet
 	{
       handleException(e);
 	}
-
+	cleanUp();
   }
 
   @Override
@@ -94,6 +98,7 @@ public abstract class Router extends HttpServlet
 	{
       handleException(e);
 	}
+	cleanUp();
   }
 
   private void handleException(Exception exception) throws IOException
@@ -115,5 +120,10 @@ public abstract class Router extends HttpServlet
 	if (matcher.find())
 	  return (uri.substring(matcher.start(1), matcher.end(1)));
 	return (null);
+  }
+  
+  private void cleanUp()
+  {
+	SqlConnection.cleanUp();
   }
 }

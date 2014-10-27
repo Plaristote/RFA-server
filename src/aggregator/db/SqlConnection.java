@@ -1,11 +1,12 @@
 package aggregator.db;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SqlConnection
 {
-  private static SqlConnection singleton = null;
+  private static HashMap<Long,SqlConnection> singletons = new HashMap<Long,SqlConnection>();
 
   private String     driver        = "com.mysql.jdbc.Driver";
   private String     username;
@@ -35,11 +36,25 @@ public class SqlConnection
     }
   }
 
-  public static SqlConnection getSingleton() throws SQLException, ClassNotFoundException
+  public static synchronized SqlConnection getSingleton() throws SQLException, ClassNotFoundException
   {
-	if (singleton == null)
-      singleton = new SqlConnection();
-    return (singleton);
+	long          thread_id  = Thread.currentThread().getId();
+	SqlConnection connection = singletons.get(thread_id);
+	
+	if (connection == null)
+	{
+	  connection = new SqlConnection();
+	  singletons.put(thread_id,  connection);
+	}
+    return (connection);
+  }
+  
+  public static synchronized void cleanUp()
+  {
+	long thread_id = Thread.currentThread().getId();
+	
+	if (singletons.get(thread_id) != null)
+	  singletons.remove(thread_id);
   }
   
   private void initialize()
