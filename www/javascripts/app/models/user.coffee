@@ -48,9 +48,8 @@ class window.CurrentUser extends Backbone.Model
       method: 'POST'
       url:     @url()
       data:
-        user:
-          email:    email
-          password: password
+        email:    email
+        password: password
       success: =>
         @set 'email', email
         @trigger 'authenticate'

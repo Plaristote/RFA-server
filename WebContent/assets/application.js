@@ -4000,10 +4000,8 @@ window.JST["session_show"] = function (__obj) {
         method: 'POST',
         url: this.url(),
         data: {
-          user: {
-            email: email,
-            password: password
-          }
+          email: email,
+          password: password
         },
         success: (function(_this) {
           return function() {
