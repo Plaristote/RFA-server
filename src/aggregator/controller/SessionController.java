@@ -35,18 +35,18 @@ public class SessionController extends Controller
   @Override
   public void create() throws Exception
   {
-	require_parameters(new ArrayList<String>() {{ add("user[email]"); add("user[password]"); }});
-	if (request.getParameter("user[email]") != "" && request.getParameter("user[password]") != "")
+	require_parameters(new ArrayList<String>() {{ add("email"); add("password"); }});
+	if (request.getParameter("email") != "" && request.getParameter("password") != "")
 	{
 	  UserTable   users   = new UserTable();
-	  List<Model> results = users.where(new HashMap<String,String>() {{ put("email", request.getParameter("user[email]")); }}).entries();
+	  List<Model> results = users.where(new HashMap<String,String>() {{ put("email", request.getParameter("email")); }}).entries();
 
 	  if (results.size() == 0)
 	  {
 	    UserModel user  = new UserModel(users);
 	
-	    user.email    = request.getParameter("user[email]");
-	    user.password = request.getParameter("user[password]");
+	    user.email    = request.getParameter("email");
+	    user.password = request.getParameter("password");
 	    user.save();
 	    request.getSession().setAttribute("user_id", user.getId());
 	  }
