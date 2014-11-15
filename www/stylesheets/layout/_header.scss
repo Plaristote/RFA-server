@@ -30,12 +30,10 @@
       display: none;
     }
 
-    .auth-modes {
-      float: left;
-
-     .auth-mode-label {
-       color: white;
-     }
+    .oauth-modes {
+      .auth-mode-label {
+        color: white;
+      }
     }
 
     .label, .value, .controls {
