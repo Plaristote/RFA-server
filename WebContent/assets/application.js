@@ -3718,7 +3718,7 @@ window.JST["session_create"] = function (__obj) {
   }
   (function() {
     (function() {
-      __out.push('<div class="oauth-modes">\n  <span>Authenticate using:</span>\n  <button class="google-authentication">Google+</button>\n  <button class="login-authentication">Login/Password</button>\n</div>\n\n<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
+      __out.push('<div class="oauth-modes">\n  <span class="auth-mode-label">Authenticate using:</span>\n  <button class="google-authentication">Google+</button>\n  <button class="login-authentication">Login/Password</button>\n</div>\n\n<form class="create-user">\n  <div class="label">\n    <label for="username">Username</label>\n  </div>\n  <div class="value">\n    <input type="text" name="username" />\n  </div>\n\n  <div class="label">\n    <label for="password">Password</label>\n  </div>\n  <div class="value">\n    <input type="password" name="password" />\n  </div>\n\n  <div class="controls">\n    <input type="submit" value="Connect" />\n  </div>\n</form>\n');
     
     }).call(this);
     

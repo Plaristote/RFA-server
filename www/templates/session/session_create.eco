@@ -1,5 +1,5 @@
 <div class="oauth-modes">
-  <span>Authenticate using:</span>
+  <span class="auth-mode-label">Authenticate using:</span>
   <button class="google-authentication">Google+</button>
   <button class="login-authentication">Login/Password</button>
 </div>

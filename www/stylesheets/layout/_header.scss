@@ -32,6 +32,10 @@
 
     .auth-modes {
       float: left;
+
+     .auth-mode-label {
+       color: white;
+     }
     }
 
     .label, .value, .controls {
