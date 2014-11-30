@@ -80,7 +80,7 @@ public class QueryBuilder
 	  _entries.add(table.createModel(results));
 	return (_entries);
   }
-  
+
   public void destroy() throws ClassNotFoundException, SQLException
   {
 	String query = "DELETE FROM " + getTableReference() + getCriterias();
@@ -128,11 +128,9 @@ public class QueryBuilder
 	String query = "";
 	
 	if (limit != null)
-	{
 	  query += " LIMIT " + limit;
-	  if (offset != null)
-		query += " OFFSET " + offset;
-	}
+	if (offset != null)
+	  query += " OFFSET " + offset;
 	return (query);
   }
 
