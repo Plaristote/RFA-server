@@ -15,13 +15,13 @@ public class JsonView
   public void property(String key, int value)
   {
 	if (needs_coma) { json += ','; }
-	json += '\"' + key + "\": " + value;
+	json += '\"' + key + "\":" + value;
     needs_coma = true;
   }
 
   public void property(String key, boolean value) {
 	if (needs_coma) { json += ','; }
-	json += '\"' + key + "\": " + (value ? "true" : "false");
+	json += '\"' + key + "\":" + (value ? "true" : "false");
     needs_coma = true;
   }
   
@@ -83,5 +83,4 @@ public class JsonView
   {
 	return ('{' + json + '}');
   }
-
 }
