@@ -36,7 +36,9 @@ public class SessionController extends Controller
   public void create() throws Exception
   {
 	require_parameters(new ArrayList<String>() {{ add("email"); add("password"); }});
-	if (request.getParameter("email") != "" && request.getParameter("password") != "")
+	if (request.getParameter("email") != "" &&
+		request.getParameter("password") != "" &&
+		request.getParameter("password").length() >= UserModel.MIN_CHARACTER_FOR_PASSWORD)
 	{
 	  UserTable   users   = new UserTable();
 	  List<Model> results = users.where(new HashMap<String,String>() {{ put("email", request.getParameter("email")); }}).entries();

@@ -12,6 +12,7 @@ import aggregator.table.ReadListTable;
 import aggregator.table.UserFeedTable;
 
 public class UserModel extends Model {
+	public static final int MIN_CHARACTER_FOR_PASSWORD = 5;
 	public String email, password;
 
 	public UserModel(Table table, ResultSet row) throws SQLException {
