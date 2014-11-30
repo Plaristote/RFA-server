@@ -18,7 +18,7 @@ public abstract class Router extends HttpServlet
   protected Controller controller;
   
   public abstract void initializeController();
-  
+
   public void loadController(HttpServletRequest request, HttpServletResponse response)
   {
 	initializeController();
@@ -112,14 +112,23 @@ public abstract class Router extends HttpServlet
     controller.response.getWriter().write("Exception Received: " + exception.toString() + "\n" + sw.getBuffer().toString());
   }
 
-  private String getIdFromUri(String uri)
+  public String getIdFromUri(String uri)
   {
-	java.util.regex.Pattern pattern = Pattern.compile(controller.request.getContextPath() + "/[^/]+/([^/]+)$");
+	java.util.regex.Pattern pattern = Pattern.compile(getContextPath() + "/[^/]+/([^/]+)$");
 	java.util.regex.Matcher matcher = pattern.matcher(uri);
 
 	if (matcher.find())
 	  return (uri.substring(matcher.start(1), matcher.end(1)));
 	return (null);
+  }
+  
+  public String getContextPath()
+  {
+	try {
+	  return controller.request.getContextPath();
+	} catch (NullPointerException e) {
+	}
+	return "";
   }
   
   private void cleanUp()

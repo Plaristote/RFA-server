@@ -5,7 +5,7 @@ public class StringUtils {
   {
 	return (ecmaScriptStringEscape(str, '\''));
   }
-	
+
   public static String ecmaScriptStringEscape(String str, char to_escape)
   {
 	String  new_string = new String();
